@@ -56,7 +56,9 @@ icell = zeros(1,length(t)); % cell current density
 Co2 = zeros(1,length(t));
 Coh = zeros(1,length(t));
 Cm = zeros(1,length(t));
+
 %% Initial Value Assignment
+
 Cac(1) = CacIN;
 Cco2(1) = Cco2IN;
 Ch(1) = ChIN;
