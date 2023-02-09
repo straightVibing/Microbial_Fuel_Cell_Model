@@ -20,8 +20,15 @@ t = 0:d_t:tmax;
 
 F = 96485.4; % Faraday's constant (Coulombs mol-1))
 R = 8.3144; % Gas Constant (J mol-1 K-1))
+P = 1; % Pressure (atm)
+TREF = 303; % Reference temperature (K)
+            % From "A 1D mathematical model..."
+Co2REF = (0.21*P)/(R*TREF); % Reference concentration of oxygen
 
 % Operational Parameters
+
+T = 303; % Operational temperature (K)
+           % Will be varying this later
 
 Va = 5; % Volume of anodic compartment (m3)
 Qa = 4; % Volumetric flowrate into the anode (m3 s-1)
@@ -39,6 +46,10 @@ Co2IN = 6; % Initial concentration of O2 (mol m-3)
 CohIN = 7; % Initial concentration of OH- (mol m-3)
 CmIN = 8; % Initial concentration of M+ cations (mol m-3)
 
+% Current density
+%alphaC = 0.44; % cathodic transfer coefficient from "A 1D mathematical model" (dimensionless)
+%etaC = ; % cathode overpotential from "A 1D mathematical model" (V)
+%io2REF = 4.222E-2*exp((73200/R)*(1/353 - 1/T)) ; % Exchange current density of oxygen from "A 1D mathematical model" (A m-2)
 %% Matrix creation
 % Uses static allocation to reduce compute time
 
@@ -59,6 +70,7 @@ Cm = zeros(1,length(t));
 
 %% Initial Value Assignment
 
+% Mass balance concentration values
 Cac(1) = CacIN;
 Cco2(1) = Cco2IN;
 Ch(1) = ChIN;
@@ -67,6 +79,8 @@ Co2(1) = Co2IN;
 Coh(1) = CohIN;
 Cm(1) = CmIN;
 
+% Current density 
+%icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
 
 %% Equations
 
