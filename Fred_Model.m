@@ -24,6 +24,7 @@ P = 1; % Pressure (atm)
 TREF = 303; % Reference temperature (K)
             % From "A 1D mathematical model..."
 Co2REF = (0.21*P)/(R*TREF); % Reference concentration of oxygen
+avo =  6.022E23; % Avogadro's constant
 
 % Operational Parameters
 
