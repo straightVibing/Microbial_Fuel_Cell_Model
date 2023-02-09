@@ -47,7 +47,21 @@ Co2IN = 6; % Initial concentration of O2 (mol m-3)
 CohIN = 7; % Initial concentration of OH- (mol m-3)
 CmIN = 8; % Initial concentration of M+ cations (mol m-3)
 
+
+% Reaction rate
+k01 = 0.207; % Rate constant of anode reaction at standard conditions (mol m-2 h-1)
+k02 = 3.288E-5; % Rate constant of cathode reaction at standard conditions
+
+alpha = 0.051; % Charge transfer coefficient in the anode
+beta = 0.663; % Charge transfer coefficient in the cathode
+Kac = 0.592; % Half velocity rate constant for acetate (mol m-3)
+Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
+
+
 % Current density
+CapA = 4E2; % Capacitance of anode (F m-2)
+CapC = 5E2; % Capacitance of cathode (F m-2)
+
 %alphaC = 0.44; % cathodic transfer coefficient from "A 1D mathematical model" (dimensionless)
 %etaC = ; % cathode overpotential from "A 1D mathematical model" (V)
 %io2REF = 4.222E-2*exp((73200/R)*(1/353 - 1/T)) ; % Exchange current density of oxygen from "A 1D mathematical model" (A m-2)
