@@ -118,10 +118,10 @@ etaC(1) = 0.1; % Need actual!
 
 % Reaction rates
 % Anode reaction rate
-r1(1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 
 % Cathode reaction rate
-r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC);
+r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
 %% Equations
 
@@ -162,9 +162,9 @@ r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
 
 % Mass balance in cathode
 
-Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2)/Vc;
+Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
 
-Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2)/Vc;
+Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 
 Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc;
 
