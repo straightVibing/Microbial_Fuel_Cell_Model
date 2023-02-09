@@ -74,14 +74,28 @@ Cco2 = zeros(1,length(t)); % concentration of dissolved CO2 (mol m-3)
 Ch = zeros(1,length(t)); % concentration of H+ (mol m-3)
 Cx = zeros(1,length(t)); % concentration of bacteria (mol m-3)
 
-% Cation flux values
-
-icell = zeros(1,length(t)); % cell current density
 
 % Cathode mass balance values 
 Co2 = zeros(1,length(t));
 Coh = zeros(1,length(t));
 Cm = zeros(1,length(t));
+
+% Current density
+Nm = zeros(1,length(t)); % Superficial flux of cations
+icell = zeros(1,length(t)); % cell current density
+
+
+% Reaction rates
+% Anode reaction rate
+r1 =zeros(1,length(t));
+
+% Cathode reaction rate
+r2 = zeros(1,length(t));
+
+% Overpotentials 
+etaA = zeros(1,length(t)); % Anode overpotential 
+etaC = zeros(1,length(t)); % Cathode overpotential
+
 
 %% Initial Value Assignment
 
