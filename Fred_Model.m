@@ -170,13 +170,9 @@ Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc;
 
 end
 
-
-%% Matrix creation and value assignment
-
-%% Initial Values
-
-%% Solving ODEs
-
-%% Calculations
-
 %% Plotting
+
+figure (1)
+plot(t,Cac,'k','LineWidth',1)
+xlabel('Time (s)','FontWeight','bold')
+ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
