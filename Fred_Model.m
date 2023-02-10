@@ -65,6 +65,7 @@ CapC = 5E2; % Capacitance of cathode (F m-2)
 %alphaC = 0.44; % cathodic transfer coefficient from "A 1D mathematical model" (dimensionless)
 %etaC = ; % cathode overpotential from "A 1D mathematical model" (V)
 %io2REF = 4.222E-2*exp((73200/R)*(1/353 - 1/T)) ; % Exchange current density of oxygen from "A 1D mathematical model" (A m-2)
+
 %% Matrix creation
 % Uses static allocation to reduce compute time
 
