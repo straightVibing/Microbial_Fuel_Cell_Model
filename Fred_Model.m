@@ -31,21 +31,21 @@ avo =  6.022E23; % Avogadro's constant
 T = 303; % Operational temperature (K)
            % Will be varying this later
 
-Va = 5; % Volume of anodic compartment (m3)
-Qa = 4; % Volumetric flowrate into the anode (m3 s-1)
-Am = 3; % Membrane cross section (m^2)
-Vc = 5; % Volume of cathodic compartment (m3)
-Qc = 4; % Volumetric flowrate into the cathode (m3 s-1)
-CacIN = 2; % Initial concentration of acetate (mol m-3)
-Cco2IN = 3; % Initial concentration of dissolved CO2 (mol m-3)
-ChIN = 4; % Initial concentration of H+ (mol m-3)
-CxIN = 5; % Initial concentration of bacteria (mol m-3)
+Va = 5.5E-5; % Volume of anodic compartment (m3)
+Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 s-1)
+Am = 5E-4; % Membrane cross section (m^2)
+Vc = 5.5E-5; % Volume of cathodic compartment (m3)
+Qc = 1.11E-3; % Volumetric flowrate into the cathode (m3 s-1)
+CacIN = 1.56; % Initial concentration of acetate (mol m-3)
+Cco2IN = 0; % Initial concentration of dissolved CO2 (mol m-3)
+ChIN = 0; % Initial concentration of H+ (mol m-3)
+CxIN = 0; % Initial concentration of bacteria (mol m-3)
 fx = 10; % Reciprical of washout fraction, Yac (bacterial yield) and Kdec (decay constant) (dimensionless)
 Yac = 0.05; % Bacterial yield
 Kdec = 8.33E-4; % decay constant (h-1)
-Co2IN = 6; % Initial concentration of O2 (mol m-3)
-CohIN = 7; % Initial concentration of OH- (mol m-3)
-CmIN = 8; % Initial concentration of M+ cations (mol m-3)
+Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
+CohIN = 0; % Initial concentration of OH- (mol m-3)
+CmIN = 0; % Initial concentration of M+ cations (mol m-3)
 
 
 % Reaction rate
