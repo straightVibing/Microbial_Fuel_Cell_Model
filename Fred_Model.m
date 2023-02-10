@@ -110,7 +110,9 @@ Cm(1) = CmIN;
 
 % Overpotentials - Need to find paper values for these 
 
-etaA(1) = 0.5; % Need actual!
+% etaA(1) = 0.5; % Need actual!
+etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % r1 is initially 0
+                % Taken from page 7 of Zheng and gives -0.251395962275225
 etaC(1) = 0.1; % Need actual!
 
 % Current density 
@@ -176,3 +178,8 @@ figure (1)
 plot(t,Cac,'k','LineWidth',1)
 xlabel('Time (s)','FontWeight','bold')
 ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+
+figure (2)
+plot(t,r1,'LineWidth',1)
+xlabel('Time (s)','FontWeight','bold')
+ylabel('Anode reaction rate (Fill out)','FontWeight','bold')
