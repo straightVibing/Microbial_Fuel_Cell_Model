@@ -11,7 +11,7 @@ close all
 
 
 %% Timestep definition
-tmax = 20;
+tmax = 40;
 d_t=0.1;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -32,20 +32,20 @@ T = 303; % Operational temperature (K)
            % Will be varying this later
 
 Va = 5.5E-5; % Volume of anodic compartment (m3)
-Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 s-1)
+Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 h-1)
 Am = 5E-4; % Membrane cross section (m^2)
 Vc = 5.5E-5; % Volume of cathodic compartment (m3)
-Qc = 1.11E-3; % Volumetric flowrate into the cathode (m3 s-1)
+Qc = 1.11E-3; % Volumetric flowrate into the cathode (m3 h-1)
 CacIN = 1.56; % Initial concentration of acetate (mol m-3)
-Cco2IN = 0.01; % Initial concentration of dissolved CO2 (mol m-3)
-ChIN = 0.01; % Initial concentration of H+ (mol m-3)
-CxIN = 0.01; % Initial concentration of bacteria (mol m-3)
+Cco2IN = 0.0; % Initial concentration of dissolved CO2 (mol m-3)
+ChIN = 0.0; % Initial concentration of H+ (mol m-3)
+CxIN = 0.0; % Initial concentration of bacteria (mol m-3)
 fx = 10; % Reciprical of washout fraction, Yac (bacterial yield) and Kdec (decay constant) (dimensionless)
 Yac = 0.05; % Bacterial yield
 Kdec = 8.33E-4; % decay constant (h-1)
 Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
-CohIN = 0.01; % Initial concentration of OH- (mol m-3)
-CmIN = 0.01; % Initial concentration of M+ cations (mol m-3)
+CohIN = 0.0; % Initial concentration of OH- (mol m-3)
+CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
 
 % Reaction rate
@@ -93,6 +93,8 @@ r1 =zeros(1,length(t));
 % Cathode reaction rate
 r2 = zeros(1,length(t));
 
+
+
 % Overpotentials 
 etaA = zeros(1,length(t)); % Anode overpotential 
 etaC = zeros(1,length(t)); % Cathode overpotential
@@ -109,6 +111,14 @@ Co2(1) = Co2IN;
 Coh(1) = CohIN;
 Cm(1) = CmIN;
 
+% Cac(1) = CacIN;
+% Cco2(1) = 1;
+% Ch(1) = 1;
+% Cx(1) = 1;
+% Co2(1) = Co2IN;
+% Coh(1) = 1;
+% Cm(1) = 1;
+
 % Overpotentials - Need to find paper values for these 
 
 % etaA(1) = 0.5; % Need actual!
@@ -122,20 +132,20 @@ etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
 %icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
 
 % Current density
-Nm(1) = Vc*Cm(1);
+Nm(1) = Am*Cm(1);
 icell(1) = Nm(1)*F/3600;
 
 
 % Reaction rates
 % Anode reaction rate
-%r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 
-r(1) = 450*icell(1)/F;
+%r(1) = 450*icell(1)/F;
 
 % Cathode reaction rate
-%r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
-r2(1) = -900*icell(1)/F;
+%r2(1) = -900*icell(1)/F;
 
 %% Equations
 
@@ -147,8 +157,8 @@ for i=1:(length(t)-1)
 etaA(i+1) = etaA(i) + d_t*(3600*icell(i)-8*F*r1(i)*1/CapA);
 
 % Reaction Rate in anode
-%r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
-r1(i+1) = 450*icell(i)/F;
+r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
+%r1(i+1) = 450*icell(i)/F;
 % Mass balances in anode
 
 Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
@@ -165,8 +175,8 @@ Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % 
 etaC(i+1) = etaC(i) + d_t*(-3600*icell(i)-4*F*r2(i)*1/CapC); 
 
 % Reaction Rate in cathode
-%r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
-r2(i+1) = -900*icell(i)/F;
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
+%r2(i+1) = -900*icell(i)/F;
 
 
 
@@ -179,7 +189,7 @@ Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN nothing happens
 
 % Current density
-Nm(i+1) = Vc*Cm(i+1);
+Nm(i+1) = Am*Cm(i+1);
 icell(i+1) = Nm(i+1)*F/3600;
 
 
