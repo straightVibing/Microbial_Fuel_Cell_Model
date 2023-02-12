@@ -12,7 +12,7 @@ close all
 
 %% Timestep definition
 tmax = 20;
-d_t=1;
+d_t=0.1;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -121,17 +121,21 @@ etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
 % Current density 
 %icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
 
-% Reaction rates
-% Anode reaction rate
-r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
-
-% Cathode reaction rate
-r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
-
 % Current density
 Nm(1) = Vc*Cm(1);
 icell(1) = Nm(1)*F/3600;
 
+
+% Reaction rates
+% Anode reaction rate
+%r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+
+r(1) = 450*icell(1)/F;
+
+% Cathode reaction rate
+%r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+
+r2(1) = -900*icell(1)/F;
 
 %% Equations
 
@@ -143,8 +147,8 @@ for i=1:(length(t)-1)
 etaA(i+1) = etaA(i) + d_t*(3600*icell(i)-8*F*r1(i)*1/CapA);
 
 % Reaction Rate in anode
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
-
+%r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
+r1(i+1) = 450*icell(i)/F;
 % Mass balances in anode
 
 Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
@@ -161,8 +165,8 @@ Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % 
 etaC(i+1) = etaC(i) + d_t*(-3600*icell(i)-4*F*r2(i)*1/CapC); 
 
 % Reaction Rate in cathode
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
-
+%r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
+r2(i+1) = -900*icell(i)/F;
 
 
 
@@ -182,7 +186,7 @@ icell(i+1) = Nm(i+1)*F/3600;
 end
 
 %% Plotting
-
+figure(1)
 % Top two plots
 tiledlayout(2,2)
 
@@ -191,14 +195,14 @@ plot(t,r1,'LineWidth',1,'Displayname','r1')
 hold on
 plot(t,r2,'LineWidth',1,'Displayname','r2')
 hold off
-xlabel('Time (s)','FontWeight','bold')
+xlabel('Time (h)','FontWeight','bold')
 ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
 title('Reaction rates')
 legend
 
 nexttile
 plot(t,Cac,'k','LineWidth',1)
-xlabel('Time (s)','FontWeight','bold')
+xlabel('Time (h)','FontWeight','bold')
 ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
 title('Acetate concentration')
 
@@ -212,7 +216,14 @@ hold on
 plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
 hold on
 plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
-xlabel('Time (s)','FontWeight','bold')
+xlabel('Time (h)','FontWeight','bold')
 ylabel('Concentration (mol m^{-3})','FontWeight','bold')
 title('All concentrations')
 legend
+
+
+figure(2)
+plot(icell,Cac,'k','LineWidth',1)
+xlabel('Current density (A m^{-2})','FontWeight','bold')
+ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+title('Acetate concentration')
