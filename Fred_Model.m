@@ -11,7 +11,7 @@ close all
 
 
 %% Timestep definition
-tmax = 1000;
+tmax = 20;
 d_t=1;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -37,15 +37,15 @@ Am = 5E-4; % Membrane cross section (m^2)
 Vc = 5.5E-5; % Volume of cathodic compartment (m3)
 Qc = 1.11E-3; % Volumetric flowrate into the cathode (m3 s-1)
 CacIN = 1.56; % Initial concentration of acetate (mol m-3)
-Cco2IN = 0; % Initial concentration of dissolved CO2 (mol m-3)
-ChIN = 0; % Initial concentration of H+ (mol m-3)
-CxIN = 0; % Initial concentration of bacteria (mol m-3)
+Cco2IN = 0.01; % Initial concentration of dissolved CO2 (mol m-3)
+ChIN = 0.01; % Initial concentration of H+ (mol m-3)
+CxIN = 0.01; % Initial concentration of bacteria (mol m-3)
 fx = 10; % Reciprical of washout fraction, Yac (bacterial yield) and Kdec (decay constant) (dimensionless)
 Yac = 0.05; % Bacterial yield
 Kdec = 8.33E-4; % decay constant (h-1)
 Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
-CohIN = 0; % Initial concentration of OH- (mol m-3)
-CmIN = 0; % Initial concentration of M+ cations (mol m-3)
+CohIN = 0.01; % Initial concentration of OH- (mol m-3)
+CmIN = 0.01; % Initial concentration of M+ cations (mol m-3)
 
 
 % Reaction rate
@@ -114,7 +114,9 @@ Cm(1) = CmIN;
 % etaA(1) = 0.5; % Need actual!
 etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % r1 is initially 0
                 % Taken from page 7 of Zheng and gives -0.251395962275225
-etaC(1) = 0.1; % Need actual!
+                % Based on Figure 4 (d) I believe this is correct 
+
+etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
 
 % Current density 
 %icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
@@ -126,15 +128,16 @@ r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 % Cathode reaction rate
 r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
+% Current density
+Nm(1) = Vc*Cm(1);
+icell(1) = Nm(1)*F/3600;
+
+
 %% Equations
 
 for i=1:(length(t)-1)
 
 % Cell density and cation flux    
-
-% Current density
-Nm(i) = Vc*Cm(i);
-icell(i) = Nm(i)*F/3600;
 
 % Anode overpotential
 etaA(i+1) = etaA(i) + d_t*(3600*icell(i)-8*F*r1(i)*1/CapA);
@@ -169,18 +172,47 @@ Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
 
 Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 
-Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc;
+Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN nothing happens
+
+% Current density
+Nm(i+1) = Vc*Cm(i+1);
+icell(i+1) = Nm(i+1)*F/3600;
+
 
 end
 
 %% Plotting
 
-figure (1)
+% Top two plots
+tiledlayout(2,2)
+
+nexttile
+plot(t,r1,'LineWidth',1,'Displayname','r1')
+hold on
+plot(t,r2,'LineWidth',1,'Displayname','r2')
+hold off
+xlabel('Time (s)','FontWeight','bold')
+ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
+title('Reaction rates')
+legend
+
+nexttile
 plot(t,Cac,'k','LineWidth',1)
 xlabel('Time (s)','FontWeight','bold')
 ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+title('Acetate concentration')
 
-figure (2)
-plot(t,r1,'LineWidth',1)
+nexttile([1 2])
+plot(t,Cac,'LineWidth',1,'Displayname','Acetate conc')
+hold on
+plot(t,Cco2,'LineWidth',1,'Displayname','CO2 conc')
+hold on 
+plot(t,Co2,'LineWidth',1,'Displayname','O2 conc')
+hold on 
+plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
+hold on
+plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
 xlabel('Time (s)','FontWeight','bold')
-ylabel('Anode reaction rate (Fill out)','FontWeight','bold')
+ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+title('All concentrations')
+legend
