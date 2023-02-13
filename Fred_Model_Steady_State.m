@@ -1,6 +1,6 @@
 %% Microbial Fuel Cell Model
 
-% Steadya state model
+% Steady state model
 
 clc
 clear  
@@ -10,6 +10,7 @@ close all
 % Model based on acetate 
 % Anode reaction: (CH2O)2 + 2H20 > 2CO2 + 8H+ + 8e-
 % Cathode reaction: O2 + 4e- + 2H20 > 4OH-
+% Anode and cathode overpotentials remain fixed
 
 
 %% Timestep definition
@@ -23,10 +24,6 @@ t = 0:d_t:tmax;
 F = 96485.4; % Faraday's constant (Coulombs mol-1))
 R = 8.3144; % Gas Constant (J mol-1 K-1))
 P = 1; % Pressure (atm)
-TREF = 303; % Reference temperature (K)
-            % From "A 1D mathematical model..."
-Co2REF = (0.21*P)/(R*TREF); % Reference concentration of oxygen
-avo =  6.022E23; % Avogadro's constant
 
 % Operational Parameters
 
@@ -132,8 +129,7 @@ etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % 
 
 etaC = etaA; % Figure 4 (d) looks like its the same as etaA(1)
 
-% Current density 
-%icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
+
 
 % Current density
 % Nm(1) = Am*Cm(1);
