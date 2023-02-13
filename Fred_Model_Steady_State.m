@@ -11,8 +11,8 @@ close all
 
 
 %% Timestep definition
-tmax = 40;
-d_t=0.1;
+tmax = 1;
+d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -46,6 +46,8 @@ Kdec = 8.33E-4; % decay constant (h-1)
 Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
 CohIN = 0.0; % Initial concentration of OH- (mol m-3)
 CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
+
+% Cell architecture
 
 
 % Reaction rate
@@ -95,38 +97,33 @@ r2 = zeros(1,length(t));
 
 
 
-% Overpotentials 
-etaA = zeros(1,length(t)); % Anode overpotential 
-etaC = zeros(1,length(t)); % Cathode overpotential
-
-
 %% Initial Value Assignment
 
 % Mass balance concentration values
-Cac(1) = CacIN;
-Cco2(1) = Cco2IN;
-Ch(1) = ChIN;
-Cx(1) = CxIN;
-Co2(1) = Co2IN;
-Coh(1) = CohIN;
-Cm(1) = CmIN;
-
 % Cac(1) = CacIN;
-% Cco2(1) = 1;
-% Ch(1) = 1;
-% Cx(1) = 1;
+% Cco2(1) = Cco2IN;
+% Ch(1) = ChIN;
+% Cx(1) = CxIN;
 % Co2(1) = Co2IN;
-% Coh(1) = 1;
-% Cm(1) = 1;
+% Coh(1) = CohIN;
+% Cm(1) = CmIN;
+
+Cac(1) = CacIN;
+Cco2(1) = 1;
+Ch(1) = 1;
+Cx(1) = 1;
+Co2(1) = Co2IN;
+Coh(1) = 1;
+Cm(1) = 1;
 
 % Overpotentials - Need to find paper values for these 
 
 % etaA(1) = 0.5; % Need actual!
-etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % r1 is initially 0
+etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % r1 is initially 0
                 % Taken from page 7 of Zheng and gives -0.251395962275225
                 % Based on Figure 4 (d) I believe this is correct 
 
-etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
+etaC = etaA; % Figure 4 (d) looks like its the same as etaA(1)
 
 % Current density 
 %icell(1) = io2REF*Co2(1)/Co2REF*exp((alphaC*etaC*F)/(R*T));
@@ -135,8 +132,8 @@ etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
 % Nm(1) = Am*Cm(1);
 % icell(1) = Nm(1)*F/3600;
 
-icell(1) = F*Vc*Cm(1);
-Nm(1) = 3600*icell(1)/F;
+% icell(1) = F*Vc*Cm(1);
+% Nm(1) = 3600*icell(1)/F;
 
 % Reaction rates
 % Anode reaction rate
@@ -147,6 +144,9 @@ r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 % Cathode reaction rate
 r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
+icell(1) = 4*F*r2(1)/-3600;
+Nm(1) = 3600*icell(1)/F;
+
 %r2(1) = -900*icell(1)/F;
 
 %% Equations
@@ -155,11 +155,9 @@ for i=1:(length(t)-1)
 
 % Cell density and cation flux    
 
-% Anode overpotential
-etaA(i+1) = etaA(i) + d_t*(3600*icell(i)-8*F*r1(i)*1/CapA);
 
 % Reaction Rate in anode
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
+r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(i)/(Kac+Cac(i)))*Cx(i);
 %r1(i+1) = 450*icell(i)/F;
 % Mass balances in anode
 
@@ -172,12 +170,9 @@ Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balanc
 Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
 
 
-% Cathode overpotential
-
-etaC(i+1) = etaC(i) + d_t*(-3600*icell(i)-4*F*r2(i)*1/CapC); 
 
 % Reaction Rate in cathode
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC);
 %r2(i+1) = -900*icell(i)/F;
 
 
@@ -194,7 +189,10 @@ Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN not
 % Nm(i+1) = Am*Cm(i+1);
 % icell(i+1) = Nm(i+1)*F/3600;
 
-icell(i+1) = F*Vc*Cm(i);
+% icell(i+1) = F*Vc*Cm(i);
+% Nm(i+1) = 3600*icell(i)/F;
+
+icell(i+1) = 4*F*r2(1)/-3600;
 Nm(i+1) = 3600*icell(i)/F;
 
 end
