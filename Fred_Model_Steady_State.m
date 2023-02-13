@@ -67,10 +67,6 @@ Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
 CapA = 4E2; % Capacitance of anode (F m-2)
 CapC = 5E2; % Capacitance of cathode (F m-2)
 
-%alphaC = 0.44; % cathodic transfer coefficient from "A 1D mathematical model" (dimensionless)
-%etaC = ; % cathode overpotential from "A 1D mathematical model" (V)
-%io2REF = 4.222E-2*exp((73200/R)*(1/353 - 1/T)) ; % Exchange current density of oxygen from "A 1D mathematical model" (A m-2)
-
 %% Matrix creation
 % Uses static allocation to reduce compute time
 
@@ -82,28 +78,29 @@ Cx = zeros(1,length(t)); % concentration of bacteria (mol m-3)
 
 
 % Cathode mass balance values 
-Co2 = zeros(1,length(t));
-Coh = zeros(1,length(t));
-Cm = zeros(1,length(t));
+Co2 = zeros(1,length(t)); % concentration of oxygen (mol m-3)
+Coh = zeros(1,length(t)); % concentration of OH- ions (mol m-3)
+Cm = zeros(1,length(t));  % concentration of cations (mol m-3)
 
 % Current density
-Nm = zeros(1,length(t)); % Superficial flux of cations
-icell = zeros(1,length(t)); % cell current density
+Nm = zeros(1,length(t)); % Superficial flux of cations (mol m-2 h-1)
+icell = zeros(1,length(t)); % cell current density (A m-2)
 
 
 % Reaction rates
 % Anode reaction rate
-r1 = zeros(1,length(t));
+r1 = zeros(1,length(t)); % (mol m-2 h-1)
 
 % Cathode reaction rate
-r2 = zeros(1,length(t));
+r2 = zeros(1,length(t)); % (mol m-2 h-1)
 
 % Cell voltage
-Ucell = zeros(1,length(t));
+Ucell = zeros(1,length(t)); % (V)
 
 %% Initial Value Assignment
 
 % Mass balance concentration values
+% As defined by Zheng et al
 % Cac(1) = CacIN;
 % Cco2(1) = Cco2IN;
 % Ch(1) = ChIN;
@@ -111,6 +108,10 @@ Ucell = zeros(1,length(t));
 % Co2(1) = Co2IN;
 % Coh(1) = CohIN;
 % Cm(1) = CmIN;
+
+% Mass balance concentration values
+% As defined by me to get over issues with the mass balance
+% If Cac(1) = CacIn then dCac/dt = 0
 
 Cac(1) = CacIN;
 Cco2(1) = 1;
@@ -120,48 +121,40 @@ Co2(1) = Co2IN;
 Coh(1) = 1;
 Cm(1) = 1;
 
-% Overpotentials - Need to find paper values for these 
+% Overpotentials
 
-% etaA(1) = 0.5; % Need actual!
-etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % r1 is initially 0
+etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % (V)
+                % r1 is initially 0
                 % Taken from page 7 of Zheng and gives -0.251395962275225
                 % Based on Figure 4 (d) I believe this is correct 
 
 etaC = etaA; % Figure 4 (d) looks like its the same as etaA(1)
 
-
-
 % Current density
-% Nm(1) = Am*Cm(1);
-% icell(1) = Nm(1)*F/3600;
-
-% icell(1) = F*Vc*Cm(1);
-% Nm(1) = 3600*icell(1)/F;
 
 % Reaction rates
 % Anode reaction rate
 r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 
-%r(1) = 450*icell(1)/F;
-
 % Cathode reaction rate
 r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
+% Current density
+% This is where the steady state assumption counts
+% See Equations (12) and (13) in Zheng
+
 icell(1) = 4*F*r2(1)/-3600;
 Nm(1) = 3600*icell(1)/F;
-
-%r2(1) = -900*icell(1)/F;
 
 %% Equations
 
 for i=1:(length(t)-1)
 
-% Cell density and cation flux    
-
 
 % Reaction Rate in anode
 r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(i)/(Kac+Cac(i)))*Cx(i);
-%r1(i+1) = 450*icell(i)/F;
+
+
 % Mass balances in anode
 
 Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
@@ -175,9 +168,8 @@ Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % 
 
 
 % Reaction Rate in cathode
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC);
-%r2(i+1) = -900*icell(i)/F;
 
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC);
 
 
 % Mass balance in cathode
@@ -189,14 +181,10 @@ Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN nothing happens
 
 % Current density
-% Nm(i+1) = Am*Cm(i+1);
-% icell(i+1) = Nm(i+1)*F/3600;
-
-% icell(i+1) = F*Vc*Cm(i);
-% Nm(i+1) = 3600*icell(i)/F;
 
 icell(i+1) = 4*F*r2(i)/-3600;
 Nm(i+1) = 3600*icell(i)/F;
+
 
 % Cell voltage
 
