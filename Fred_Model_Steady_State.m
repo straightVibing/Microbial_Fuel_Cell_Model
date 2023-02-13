@@ -11,8 +11,8 @@ close all
 
 
 %% Timestep definition
-tmax = 1;
-d_t=0.01;
+tmax = 30;
+d_t=0.0001;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -48,7 +48,11 @@ CohIN = 0.0; % Initial concentration of OH- (mol m-3)
 CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
 % Cell architecture
-
+U0 = 0.77; % Cell open circuit potential (V)
+dm = 1.778E-4; % Thickness of membrane (m)
+dcell = 2.2E-2; % Distance between anode and cathode in cell (m)
+km = 17; % Electrical conductivity of membrane (ohm-1 m-1)
+kaq = 5; % Electrical conductivity of the aqueous solution (ohm-1 m-1)
 
 % Reaction rate
 k01 = 0.207; % Rate constant of anode reaction at standard conditions (mol m-2 h-1)
@@ -90,12 +94,13 @@ icell = zeros(1,length(t)); % cell current density
 
 % Reaction rates
 % Anode reaction rate
-r1 =zeros(1,length(t));
+r1 = zeros(1,length(t));
 
 % Cathode reaction rate
 r2 = zeros(1,length(t));
 
-
+% Cell voltage
+Ucell = zeros(1,length(t));
 
 %% Initial Value Assignment
 
@@ -192,8 +197,12 @@ Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN not
 % icell(i+1) = F*Vc*Cm(i);
 % Nm(i+1) = 3600*icell(i)/F;
 
-icell(i+1) = 4*F*r2(1)/-3600;
+icell(i+1) = 4*F*r2(i)/-3600;
 Nm(i+1) = 3600*icell(i)/F;
+
+% Cell voltage
+
+Ucell(i) = U0 - etaA + etaC -(dm/km + dcell/kaq)*icell(i);
 
 end
 
@@ -235,7 +244,18 @@ legend
 
 
 figure(2)
+% Top two plots
+tiledlayout(2,2)
+
+nexttile
 plot(icell,Cac,'k','LineWidth',1)
 xlabel('Current density (A m^{-2})','FontWeight','bold')
 ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
 title('Acetate concentration')
+
+nexttile
+plot(icell,Ucell,'k','LineWidth',1)
+xlabel('Current density (A m^{-2})','FontWeight','bold')
+ylabel('Cell Voltage (V)','FontWeight','bold')
+title('Voltage')
+
