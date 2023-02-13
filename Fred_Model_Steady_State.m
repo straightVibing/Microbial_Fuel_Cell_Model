@@ -1,5 +1,7 @@
 %% Microbial Fuel Cell Model
 
+% Steadya state model
+
 clc
 clear  
 close all 
