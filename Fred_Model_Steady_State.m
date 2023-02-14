@@ -28,7 +28,7 @@ P = 1; % Pressure (atm)
 % Operational Parameters
 
 T = 303; % Operational temperature (K)
-           % Will be varying this later
+         % Will be varying this later
 
 Va = 5.5E-5; % Volume of anodic compartment (m3)
 Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 h-1)
@@ -54,9 +54,13 @@ km = 17; % Electrical conductivity of membrane (ohm-1 m-1)
 kaq = 5; % Electrical conductivity of the aqueous solution (ohm-1 m-1)
 
 % Reaction rate
+% These are temperature dependent
+% Will need to account for that when varying temperature
 k01 = 0.207; % Rate constant of anode reaction at standard conditions (mol m-2 h-1)
 k02 = 3.288E-5; % Rate constant of cathode reaction at standard conditions
 
+
+% These are also temperature dependent 
 alpha = 0.051; % Charge transfer coefficient in the anode
 beta = 0.663; % Charge transfer coefficient in the cathode
 Kac = 0.592; % Half velocity rate constant for acetate (mol m-3)
@@ -68,7 +72,7 @@ CapA = 4E2; % Capacitance of anode (F m-2)
 CapC = 5E2; % Capacitance of cathode (F m-2)
 
 %% Matrix creation
-% Uses static allocation to reduce compute time
+% Uses static allocation to reduce compute time compared to dynamic 
 
 % Anode mass balance values
 Cac=zeros(1,length(t)); % concentration of acetate (mol m-3)
@@ -129,19 +133,21 @@ etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % 
                 % Based on Figure 4 (d) I believe this is correct 
 
 etaC = etaA; % Figure 4 (d) looks like its the same as etaA(1)
-
-% Current density
+             % A bit of theory as to why would be good for diss
+             % justification
 
 % Reaction rates
+% From Zheng et al
 % Anode reaction rate
-r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+r1(1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 
 % Cathode reaction rate
-r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC);
 
 % Current density
 % This is where the steady state assumption counts
 % See Equations (12) and (13) in Zheng
+% The overpotentials are considered fixed throughout the cells operation
 
 icell(1) = 4*F*r2(1)/-3600;
 Nm(1) = 3600*icell(1)/F;
@@ -188,7 +194,7 @@ Nm(i+1) = 3600*icell(i)/F;
 
 % Cell voltage
 
-Ucell(i) = U0 - etaA + etaC -(dm/km + dcell/kaq)*icell(i);
+Ucell(i+1) = U0 - etaA + etaC -(dm/km + dcell/kaq)*icell(i);
 
 end
 
