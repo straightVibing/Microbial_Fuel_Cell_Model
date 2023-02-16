@@ -15,7 +15,7 @@ close all
 
 %% Timestep definition
 tmax = 30;
-d_t=0.01;
+d_t=0.05;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -48,8 +48,10 @@ CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
 % Fixed current density
 
-icell = 2; %Cell current density (A m-2)
+icell = 2; % Cell current density (A m-2)
 Nm = 3600*icell/F; % Superficial flux of cations through the membrane (mol m-2 h-1)
+                   % Should this be fixed as well?
+
 
 % Cell architecture
 U0 = 0.77; % Cell open circuit potential (V)
@@ -57,6 +59,8 @@ dm = 1.778E-4; % Thickness of membrane (m)
 dcell = 2.2E-2; % Distance between anode and cathode in cell (m)
 km = 17; % Electrical conductivity of membrane (ohm-1 m-1)
 kaq = 5; % Electrical conductivity of the aqueous solution (ohm-1 m-1)
+         % Will need to specify membrane and solution compositions for
+         % report
 
 % Reaction rate
 % These are temperature dependent
@@ -120,7 +124,9 @@ Cm(1) = CmIN;
 % Mass balance concentration values
 % As defined by me to get over issues with the mass balance
 % If Cac(1) = CacIn then dCac/dt = 0
-% Need to test validity of these
+% A result of incorrect or poorly ordered equations
+% If I can't fix them then I should find concentrations for specific times
+% and not t = 0
 
 
 % Cac(1) = CacIN;
@@ -134,7 +140,7 @@ Cm(1) = CmIN;
 % Overpotentials
 
 etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % (V)
-                % r1 is initially 0
+                % r1 is initially 0 @ t = 0
                 % Taken from page 7 of Zheng and gives -0.251395962275225
                 % Based on Figure 4 (d) I believe this is correct 
 
@@ -158,11 +164,6 @@ Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
 
 for i=1:(length(t)-1)
 
-
-% Reaction Rate in anode
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
-
-
 % Mass balances in anode
 
 Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
@@ -173,14 +174,13 @@ Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balanc
 
 Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
 
+% Reaction Rate in anode
+
+r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
+
 % Anode overpotential
 
 etaA(i+1) = etaA(i) + d_t*(3600*icell - 8*F*r1(i))/CapA; % Change in anode overpotential
-
-% Reaction Rate in cathode
-
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
-
 
 % Mass balance in cathode
 
@@ -189,6 +189,10 @@ Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
 Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 
 Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm)/Vc; % When Cm(i) = CmIN nothing happens
+
+% Reaction Rate in cathode
+
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
 
 % Cathode overpotential
 
