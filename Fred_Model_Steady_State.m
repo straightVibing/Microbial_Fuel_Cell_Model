@@ -15,7 +15,7 @@ close all
 
 %% Timestep definition
 tmax = 30;
-d_t=0.0001;
+d_t=0.1;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -116,6 +116,8 @@ Ucell = zeros(1,length(t)); % (V)
 % Mass balance concentration values
 % As defined by me to get over issues with the mass balance
 % If Cac(1) = CacIn then dCac/dt = 0
+% Need to test validity of these
+
 
 Cac(1) = CacIN;
 Cco2(1) = 1;
@@ -239,13 +241,13 @@ figure(2)
 % Top two plots
 tiledlayout(2,2)
 
-nexttile
+nexttile([1 2])
 plot(icell,Cac,'k','LineWidth',1)
 xlabel('Current density (A m^{-2})','FontWeight','bold')
 ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
 title('Acetate concentration')
 
-nexttile
+nexttile([1 2])
 plot(icell,Ucell,'k','LineWidth',1)
 xlabel('Current density (A m^{-2})','FontWeight','bold')
 ylabel('Cell Voltage (V)','FontWeight','bold')

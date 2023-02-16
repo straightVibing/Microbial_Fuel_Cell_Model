@@ -1,0 +1,195 @@
+commit 3a68676b8b47742f83955a23450e2667ff66ad2e
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Mon Feb 13 12:46:48 2023 +0000
+
+    Add voltage calculation and model makes sense
+    
+    Obviously not perfect and will need plenty of tweaking but seems viable
+
+commit e6b5c94c46972b3ad814c075017299194f66ab67
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Mon Feb 13 10:11:22 2023 +0000
+
+    Reasonable results at steady state!
+
+commit 5738ebd8db65ae0047e0e187ac3b87566002109c
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Mon Feb 13 09:02:05 2023 +0000
+
+    Creation of steady state model with fixed overpotentials
+
+commit 6e921eb8052f41219290915895f65cb92aa32ab1
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Sun Feb 12 15:45:55 2023 +0000
+
+    Nm is probably wrong
+    
+    I don't like how I've calculated it
+
+commit a235d40809d8af2ec6b4c1f21dbf101187937046
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Sun Feb 12 10:43:39 2023 +0000
+
+    Tried steady state reaction rate and adjusted time, no luck
+    
+    Also added Cac against cel density plot
+
+commit 4d3f3b16d6c6f012da61dde1c7d9badca8a6114a
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Sun Feb 12 09:53:10 2023 +0000
+
+    Troubleshooting with a nice graph, no progress
+    
+    Can't figure out why its not working
+
+commit f6347f0feee48126b78ff6aa8948771e8faba4fb
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Fri Feb 10 17:30:01 2023 +0000
+
+    We will fix the weird results
+    
+    First step is to examine all the equations to make sure they are correct
+
+commit 285d7a91842f1f3fb68d20e7f577ba33857335c0
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Fri Feb 10 13:23:26 2023 +0000
+
+    Anode reaction rate is 0!!
+    
+    Not too sure what's gone wrong here
+
+commit c30c8ff9f5d8b295c69de04b30533d32bc4ad318
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Fri Feb 10 11:03:15 2023 +0000
+
+    Add plot of acetate conc against time for model verification
+    
+    Will allow me to see weird results easier than checking matrix values
+
+commit fcee2f75e658af0b0099fc3c30d0fd64f6b9d16c
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Fri Feb 10 10:58:46 2023 +0000
+
+    Changed operational parameters to be inline with Zheng
+    
+    As a result, reaction rates stay at 0 which  isn't ideal
+
+commit d4078abe723a26f2e90f209c7c96b9deeb8bc550
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 16:09:15 2023 +0000
+
+    It runs! Still work todo
+    
+    Doesn't calculate all things but need to adjust parameters and start making figures
+
+commit 01a6e5fe2e9587de20a06bce59dfdbfe6eccbbda
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 15:54:45 2023 +0000
+
+    Implemented reaction rates - big changes
+    
+    This one wasn't fun
+    
+    ADded the reaction rates , overpotentials and cation flux as mentioned in Zheng
+    
+    Most of the constant values were taken from the paper directly
+    
+    Some were madeup and will need to replaced
+    
+    Caluculated molar flux from conc in cathode times cathode volume
+    
+    Used that to find cell current density
+    
+    Used current density to find overpotentials at anode and cathode
+
+commit ba076eced71e76788f2b909e09d7680f96ba9245
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 15:52:33 2023 +0000
+
+    Removed repeated line
+
+commit 6836163a358b7a1fc99cdab057e095389549baff
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 15:52:05 2023 +0000
+
+    Added reaction rate constants from Zheng
+
+commit 2aa08fe14f0fcc570651be3850c4aaee27b9b8a3
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 15:34:04 2023 +0000
+
+    Added avogadro's constant
+
+commit dccec3765796c4dd396e6367479ed005c00d7563
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Thu Feb 9 11:45:13 2023 +0000
+
+    Figuring out current density
+    
+    Tried to add somehthing from "A 1D mathematical mode" until I realised there's an easier solution using Nm
+
+commit 14fd5f6b44e4f8d23fe7163d0c7b7a92dda70708
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Wed Feb 8 13:20:16 2023 +0000
+
+    Formatting
+
+commit 690f5b27d8839324b7b08ae52019cfc6f25927dc
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Wed Feb 8 13:16:59 2023 +0000
+
+    Cathode mass balance work and constants - Issue with current density
+    
+    How am I supposed to implement it, Zheng was not clear enough
+    
+    Using solutions from other papers may add unknown/incompatible assumptions
+
+commit 380b00fd8d4460fc3bcd5c2431936b2f04f3d728
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Wed Feb 8 10:03:50 2023 +0000
+
+    Anode mass balance equations from Zheng
+    
+    Decided not to use the function handle methode and instead use a technique similar to what I learnt in numerical
+    
+    Some parameters are made up and some are from Zheng
+
+commit cbc7386a64f6e94fe360410d1d6aaa5c30eaf3ab
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 16:09:19 2023 +0000
+
+    Gitignore file
+
+commit 74d8985f1fc15297a6490a4d114b6fd7d8e8a2a5
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 15:29:45 2023 +0000
+
+    Assumptions and reactions comment
+
+commit eb8e860fcc5afd8cd7739555e92490da35a8f7a6
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 15:02:27 2023 +0000
+
+    Pdf I'll be getting the equations from
+
+commit 151fa7895007fd72eb50defe59b7cf879581f697
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 15:02:04 2023 +0000
+
+    Timestep definition
+
+commit 68637b8a06704d70ce955dbd553c7e6e98b56492
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 14:06:56 2023 +0000
+
+    Add headings
+    
+    Gives a bit of layout
+
+commit 9c8aa59cafd1d9a6d214b2296feba0afaf41e9f8
+Author: Fred <fredbarrett84@gmail.com>
+Date:   Tue Feb 7 13:54:07 2023 +0000
+
+    Create model
+    
+    FIrst step to make my own model
