@@ -15,7 +15,7 @@ close all
 
 %% Timestep definition
 tmax = 30;
-d_t=0.1;
+d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -45,6 +45,11 @@ Kdec = 8.33E-4; % decay constant (h-1)
 Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
 CohIN = 0.0; % Initial concentration of OH- (mol m-3)
 CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
+
+% Fixed current density
+
+icell = 2; %Cell current density (A m-2)
+Nm = 3600*icell/F; % Superficial flux of cations through the membrane (mol m-2 h-1)
 
 % Cell architecture
 U0 = 0.77; % Cell open circuit potential (V)
@@ -86,17 +91,16 @@ Co2 = zeros(1,length(t)); % concentration of oxygen (mol m-3)
 Coh = zeros(1,length(t)); % concentration of OH- ions (mol m-3)
 Cm = zeros(1,length(t));  % concentration of cations (mol m-3)
 
-% Current density
-Nm = zeros(1,length(t)); % Superficial flux of cations (mol m-2 h-1)
-icell = zeros(1,length(t)); % cell current density (A m-2)
-
-
 % Reaction rates
 % Anode reaction rate
 r1 = zeros(1,length(t)); % (mol m-2 h-1)
 
 % Cathode reaction rate
 r2 = zeros(1,length(t)); % (mol m-2 h-1)
+
+% Overpotentials
+etaA = zeros(1,length(t)); % (V)
+etaC = zeros(1,length(t)); % (V)
 
 % Cell voltage
 Ucell = zeros(1,length(t)); % (V)
@@ -105,13 +109,13 @@ Ucell = zeros(1,length(t)); % (V)
 
 % Mass balance concentration values
 % As defined by Zheng et al
-% Cac(1) = CacIN;
-% Cco2(1) = Cco2IN;
-% Ch(1) = ChIN;
-% Cx(1) = CxIN;
-% Co2(1) = Co2IN;
-% Coh(1) = CohIN;
-% Cm(1) = CmIN;
+Cac(1) = CacIN;
+Cco2(1) = Cco2IN;
+Ch(1) = ChIN;
+Cx(1) = CxIN;
+Co2(1) = Co2IN;
+Coh(1) = CohIN;
+Cm(1) = CmIN;
 
 % Mass balance concentration values
 % As defined by me to get over issues with the mass balance
@@ -119,40 +123,36 @@ Ucell = zeros(1,length(t)); % (V)
 % Need to test validity of these
 
 
-Cac(1) = CacIN;
-Cco2(1) = 1;
-Ch(1) = 1;
-Cx(1) = 1;
-Co2(1) = Co2IN;
-Coh(1) = 1;
-Cm(1) = 1;
+% Cac(1) = CacIN;
+% Cco2(1) = 1;
+% Ch(1) = 1;
+% Cx(1) = 1;
+% Co2(1) = Co2IN;
+% Coh(1) = 1;
+% Cm(1) = 1;
 
 % Overpotentials
 
-etaA = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % (V)
+etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % (V)
                 % r1 is initially 0
                 % Taken from page 7 of Zheng and gives -0.251395962275225
                 % Based on Figure 4 (d) I believe this is correct 
 
-etaC = etaA; % Figure 4 (d) looks like its the same as etaA(1)
+etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
              % A bit of theory as to why would be good for diss
              % justification
 
 % Reaction rates
 % From Zheng et al
 % Anode reaction rate
-r1(1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
 
 % Cathode reaction rate
-r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC);
+r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
 
-% Current density
-% This is where the steady state assumption counts
-% See Equations (12) and (13) in Zheng
-% The overpotentials are considered fixed throughout the cells operation
+% Cell Voltage
 
-icell(1) = 4*F*r2(1)/-3600;
-Nm(1) = 3600*icell(1)/F;
+Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
 
 %% Equations
 
@@ -160,7 +160,7 @@ for i=1:(length(t)-1)
 
 
 % Reaction Rate in anode
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA)*(Cac(i)/(Kac+Cac(i)))*Cx(i);
+r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
 
 
 % Mass balances in anode
@@ -173,11 +173,13 @@ Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balanc
 
 Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
 
+% Anode overpotential
 
+etaA(i+1) = etaA(i) + d_t*(3600*icell - 8*F*r1(i))/CapA; % Change in anode overpotential
 
 % Reaction Rate in cathode
 
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC);
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
 
 
 % Mass balance in cathode
@@ -186,17 +188,16 @@ Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
 
 Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 
-Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm(i))/Vc; % When Cm(i) = CmIN nothing happens
+Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm)/Vc; % When Cm(i) = CmIN nothing happens
 
-% Current density
+% Cathode overpotential
 
-icell(i+1) = 4*F*r2(i)/-3600;
-Nm(i+1) = 3600*icell(i)/F;
+etaC(i+1) = etaC(i) + d_t*(-3600*icell - 4*F*r2(i))/CapC; % Change in Cathode overpotential
 
 
 % Cell voltage
 
-Ucell(i+1) = U0 - etaA + etaC -(dm/km + dcell/kaq)*icell(i);
+Ucell(i+1) = U0 - etaA(i) + etaC(i) -(dm/km + dcell/kaq)*icell;
 
 end
 
