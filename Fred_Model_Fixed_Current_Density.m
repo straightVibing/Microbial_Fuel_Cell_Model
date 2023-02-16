@@ -14,8 +14,8 @@ close all
 
 
 %% Timestep definition
-tmax = 30;
-d_t=0.05;
+tmax = 60;
+d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
 
@@ -174,13 +174,13 @@ Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balanc
 
 Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
 
-% Reaction Rate in anode
-
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i);
-
 % Anode overpotential
 
 etaA(i+1) = etaA(i) + d_t*(3600*icell - 8*F*r1(i))/CapA; % Change in anode overpotential
+
+% Reaction Rate in anode
+
+r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i); % Anode reaction rate
 
 % Mass balance in cathode
 
@@ -190,14 +190,14 @@ Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
 
 Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm)/Vc; % When Cm(i) = CmIN nothing happens
 
-% Reaction Rate in cathode
-
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
-
 % Cathode overpotential
 
 etaC(i+1) = etaC(i) + d_t*(-3600*icell - 4*F*r2(i))/CapC; % Change in Cathode overpotential
 
+
+% Reaction Rate in cathode
+
+r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
 
 % Cell voltage
 
@@ -242,19 +242,19 @@ title('All concentrations')
 legend
 
 
-figure(2)
-% Top two plots
-tiledlayout(2,2)
-
-nexttile([1 2])
-plot(icell,Cac,'k','LineWidth',1)
-xlabel('Current density (A m^{-2})','FontWeight','bold')
-ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
-title('Acetate concentration')
-
-nexttile([1 2])
-plot(icell,Ucell,'k','LineWidth',1)
-xlabel('Current density (A m^{-2})','FontWeight','bold')
-ylabel('Cell Voltage (V)','FontWeight','bold')
-title('Voltage')
+% figure(2)
+% % Top two plots
+% tiledlayout(2,2)
+% 
+% nexttile([1 2])
+% plot(icell,Cac,'k','LineWidth',1)
+% xlabel('Current density (A m^{-2})','FontWeight','bold')
+% ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+% title('Acetate concentration')
+% 
+% nexttile([1 2])
+% plot(icell,Ucell,'k','LineWidth',1)
+% xlabel('Current density (A m^{-2})','FontWeight','bold')
+% ylabel('Cell Voltage (V)','FontWeight','bold')
+% title('Voltage')
 
