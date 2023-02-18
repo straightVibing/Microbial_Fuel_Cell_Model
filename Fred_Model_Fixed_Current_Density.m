@@ -186,8 +186,8 @@ for icell = 0:0.01:icellMAX
                     % Based on Figure 4 (d) I believe this is correct 
     
     etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
-                 % A bit of theory as to why would be good for diss
-                 % justification
+                 % I belive this is no longer accurate
+                 % 
     
     
     % Cathode reaction rate
