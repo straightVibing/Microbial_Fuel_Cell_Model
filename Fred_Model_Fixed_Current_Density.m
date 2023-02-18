@@ -185,15 +185,15 @@ for icell = 0:0.01:icellMAX
                     % Taken from page 7 of Zheng and gives -0.251395962275225
                     % Based on Figure 4 (d) I believe this is correct 
     
-    etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
-                 % I belive this is no longer accurate
-                 % 
-    
+
     
     % Cathode reaction rate
     %r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
     
     r2(1) = -3600*icell/(4*F);
+
+    etaC(1) = R*T/(F*(beta-1))*log(r2(1)/-k02*(Ko2+Co2(1))/(Co2(1)));
+
     
     % Cell Voltage
     
@@ -241,6 +241,8 @@ for icell = 0:0.01:icellMAX
     
     % Cathode overpotential
     
+    %etaC(i+1) = R*T/F*(beta -1)*log(r2(i)/-k02*(Ko2+Co2(i))/(Co2(i)));
+
     etaC(i+1) = etaC(i) + d_t*(-3600*icell - 4*F*r2(i))/CapC; % Change in Cathode overpotential
     
     
