@@ -14,7 +14,7 @@ close all
 
 
 %% Timestep definition
-tmax = 60;
+tmax = 600;
 d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -48,8 +48,8 @@ CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
 % Fixed current density
 
-icell = 2; % Cell current density (A m-2)
-Nm = 3600*icell/F; % Superficial flux of cations through the membrane (mol m-2 h-1)
+%icell = 10; % Cell current density (A m-2)
+%Nm = 3600*icell/F; % Superficial flux of cations through the membrane (mol m-2 h-1)
                    % Should this be fixed as well?
 
 
@@ -109,152 +109,286 @@ etaC = zeros(1,length(t)); % (V)
 % Cell voltage
 Ucell = zeros(1,length(t)); % (V)
 
-%% Initial Value Assignment
-
-% Mass balance concentration values
-% As defined by Zheng et al
-Cac(1) = CacIN;
-Cco2(1) = Cco2IN;
-Ch(1) = ChIN;
-Cx(1) = CxIN;
-Co2(1) = Co2IN;
-Coh(1) = CohIN;
-Cm(1) = CmIN;
-
-% Mass balance concentration values
-% As defined by me to get over issues with the mass balance
-% If Cac(1) = CacIn then dCac/dt = 0
-% A result of incorrect or poorly ordered equations
-% If I can't fix them then I should find concentrations for specific times
-% and not t = 0
 
 
-% Cac(1) = CacIN;
-% Cco2(1) = 1;
-% Ch(1) = 1;
-% Cx(1) = 1;
-% Co2(1) = Co2IN;
-% Coh(1) = 1;
-% Cm(1) = 1;
-
+% loop for different current densities
+% Data to save - final values inmatrix as I'm interested in the steady
+% state values once the system has stabilised 
+% Reaction rates
+% Concentrations
 % Overpotentials
 
-etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN) +1)); % (V)
-                % r1 is initially 0 @ t = 0
-                % Taken from page 7 of Zheng and gives -0.251395962275225
-                % Based on Figure 4 (d) I believe this is correct 
+icellM = zeros(1,12);
+r1M = zeros(1,12);
+r2M = zeros(1,12);
+CacM = zeros(1,12);
+Cco2M = zeros(1,12);
+ChM = zeros(1,12);
+CmM = zeros(1,12);
+CohM = zeros(1,12);
+Co2M =zeros(1,12);
+CxM = zeros(1,12);
+etaAM = zeros(1,12);
+etaCM = zeros(1,12);
 
-etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
-             % A bit of theory as to why would be good for diss
-             % justification
+for icell = 0:1:12
 
-% Reaction rates
-% From Zheng et al
-% Anode reaction rate
-r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+    Nm = 3600*icell/F;
 
-% Cathode reaction rate
-r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+    icellM(icell+1) = icell;
+    %% Initial Value Assignment
 
-% Cell Voltage
+    % Mass balance concentration values
+    % As defined by Zheng et al
+    Cac(1) = CacIN;
+    Cco2(1) = Cco2IN;
+    Ch(1) = ChIN;
+    Cx(1) = CxIN;
+    Co2(1) = Co2IN;
+    Coh(1) = CohIN;
+    Cm(1) = CmIN;
+    
+    % Mass balance concentration values
+    % As defined by me to get over issues with the mass balance
+    % If Cac(1) = CacIn then dCac/dt = 0
+    % A result of incorrect or poorly ordered equations
+    % If I can't fix them then I should find concentrations for specific times
+    % and not t = 0
+    
+    
+    % Cac(1) = CacIN;
+    % Cco2(1) = 1;
+    % Ch(1) = 1;
+    % Cx(1) = 1;
+    % Co2(1) = Co2IN;
+    % Coh(1) = 1;
+    % Cm(1) = 1;
+    
+    % Overpotentials
+    
+    
+    % Reaction rates
+    % From Zheng et al
+    % Anode reaction rate
+    %r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
+    
+    r1(1) = 3600*icell/(8*F);
+    
+    etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN -r1(1)*(Am/Qa)) +1)); % (V)
+                    % r1 is initially 0 @ t = 0
+                    % Taken from page 7 of Zheng and gives -0.251395962275225
+                    % Based on Figure 4 (d) I believe this is correct 
+    
+    etaC(1) = etaA(1); % Figure 4 (d) looks like its the same as etaA(1)
+                 % A bit of theory as to why would be good for diss
+                 % justification
+    
+    
+    % Cathode reaction rate
+    %r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+    
+    r2(1) = -3600*icell/(4*F);
+    
+    % Cell Voltage
+    
+    Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
 
-Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
 
-%% Equations
+    %% Equations
+    
+    for i=1:(length(t)-1)
+    
+    % Mass balances in anode
+    
+    Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
+    
+    % Test for weirdness
+    
+    if isnan(r1(i))
+        disp(i)
+        break
+    end
+    
+    
+    Cco2(i+1) = Cco2(i) + d_t*(Qa*(Cco2IN - Cco2(i)) + 2*Am*r1(i))/Va; % Dissolved CO2 mass balance
+    
+    Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balance
+    
+    Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
+    
+    % Anode overpotential
+    
+    etaA(i+1) = etaA(i) + d_t*(3600*icell - 8*F*r1(i))/CapA; % Change in anode overpotential
+    
+    % Reaction Rate in anode
+    %r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i); % Anode reaction rate
+    
+    r1(i+1) = 3600*icell/(8*F);
+    
+    % Mass balance in cathode
+    
+    Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
+    
+    Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
+    
+    Cm(i+1) = Cm(i) + d_t/Vc*(Qc*(CmIN - Cm(i)) + Am*Nm); % When Cm(i) = CmIN nothing happens
+    
+    % Cathode overpotential
+    
+    etaC(i+1) = etaC(i) + d_t*(-3600*icell - 4*F*r2(i))/CapC; % Change in Cathode overpotential
+    
+    
+    % Reaction Rate in cathode
+    
+    %r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
+    r2(i+1) = -3600*icell/(4*F);
+    
+    % Cell voltage
+    
+    Ucell(i+1) = U0 - etaA(i) + etaC(i) -(dm/km + dcell/kaq)*icell;
+    
+    end
 
-for i=1:(length(t)-1)
-
-% Mass balances in anode
-
-Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
-
-Cco2(i+1) = Cco2(i) + d_t*(Qa*(Cco2IN - Cco2(i)) + 2*Am*r1(i))/Va; % Dissolved CO2 mass balance
-
-Ch(i+1) = Ch(i) + d_t*(Qa*(ChIN - Ch(i)) + 8*Am*r1(i))/Va; % H+ ions mass balance
-
-Cx(i+1) = Cx(i) + d_t*(Qa*(CxIN-Cx(i))/fx + Am*Yac*r1(i) - Va*Kdec*Cx(i))/Va; % Bacteria mass balance
-
-% Anode overpotential
-
-etaA(i+1) = etaA(i) + d_t*(3600*icell - 8*F*r1(i))/CapA; % Change in anode overpotential
-
-% Reaction Rate in anode
-
-r1(i+1) = k01*exp((alpha*F)/(R*T)*etaA(i))*(Cac(i)/(Kac+Cac(i)))*Cx(i); % Anode reaction rate
-
-% Mass balance in cathode
-
-Co2(i+1) = Co2(i) + d_t*(Qc*(Co2IN - Co2(i)) + Am*r2(i))/Vc;
-
-Coh(i+1) = Coh(i) + d_t*(Qc*(CohIN - Coh(i)) - 4*Am*r2(i))/Vc;
-
-Cm(i+1) = Cm(i) + d_t*(Qc*(CmIN - Cm(i)) + Am*Nm)/Vc; % When Cm(i) = CmIN nothing happens
-
-% Cathode overpotential
-
-etaC(i+1) = etaC(i) + d_t*(-3600*icell - 4*F*r2(i))/CapC; % Change in Cathode overpotential
+    r1M(icell+1) = r1(end);
+    r2M(icell+1) = r2(end);
+    CacM(icell+1) = Cac(end);
+    Cco2M(icell+1) = Cco2(end);
+    ChM(icell+1) = Ch(end);
+    CmM(icell+1) = Cm(end);
+    CohM(icell+1) = Coh(end);
+    Co2M(icell+1) =Co2(end);
+    CxM(icell+1) = Cx(end);
+    etaAM(icell+1) = etaA(end);
+    etaCM(icell+1) = etaC(end);
 
 
-% Reaction Rate in cathode
-
-r2(i+1) = -k02*Co2(i)/(Ko2+Co2(i))*exp((beta-1)*F/(R*T)*etaC(i));
-
-% Cell voltage
-
-Ucell(i+1) = U0 - etaA(i) + etaC(i) -(dm/km + dcell/kaq)*icell;
-
+       
 end
 
-%% Plotting
+
+
+
 figure(1)
-% Top two plots
 tiledlayout(2,2)
-
 nexttile
-plot(t,r1,'LineWidth',1,'Displayname','r1')
+plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o')
 hold on
-plot(t,r2,'LineWidth',1,'Displayname','r2')
+plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o')
 hold off
-xlabel('Time (h)','FontWeight','bold')
+title("Reaction Rates")
+grid
+grid minor
+ylim([-0.12 0.08])
 ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
-title('Reaction rates')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
 nexttile
-plot(t,Cac,'k','LineWidth',1)
-xlabel('Time (h)','FontWeight','bold')
-ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
-title('Acetate concentration')
-
-nexttile([1 2])
-plot(t,Cac,'LineWidth',1,'Displayname','Acetate conc')
+plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o')
 hold on
-plot(t,Cco2,'LineWidth',1,'Displayname','CO2 conc')
-hold on 
-plot(t,Co2,'LineWidth',1,'Displayname','O2 conc')
-hold on 
-plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
+plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o')
 hold on
-plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
-xlabel('Time (h)','FontWeight','bold')
-ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+% plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o')
+% hold on
+plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o')
+hold on
+% plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o')
+% hold on
+plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o')
+hold on
+plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o')
+hold off
+grid 
+grid minor
+legend
 title('All concentrations')
+ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+
+% Calculate pH and pOH
+phAnode = log10(ChM*1000); % Convert to moles per litre
+phCathode = log10(CohM*1000);
+
+nexttile
+plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o')
+hold on
+plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o')
+hold off
+title("Reaction Rates")
+grid
+grid minor
+ylabel('pH','FontWeight','bold')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+legend
+
+nexttile
+plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o')
+hold on
+plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o')
+hold off
+title("Reaction Rates")
+grid
+grid minor
+ylabel('pH','FontWeight','bold')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
 
-% figure(2)
+%% Plotting
+% figure(1)
 % % Top two plots
 % tiledlayout(2,2)
 % 
-% nexttile([1 2])
-% plot(icell,Cac,'k','LineWidth',1)
-% xlabel('Current density (A m^{-2})','FontWeight','bold')
+% nexttile
+% plot(t,r1,'LineWidth',1,'Displayname','r1')
+% hold on
+% plot(t,r2,'LineWidth',1,'Displayname','r2')
+% hold off
+% xlabel('Time (h)','FontWeight','bold')
+% ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
+% grid
+% title('Reaction rates')
+% legend
+% 
+% nexttile
+% plot(t,Cac,'k','LineWidth',1)
+% xlabel('Time (h)','FontWeight','bold')
 % ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+% ylim([0 1.6])
+% grid
 % title('Acetate concentration')
 % 
 % nexttile([1 2])
-% plot(icell,Ucell,'k','LineWidth',1)
-% xlabel('Current density (A m^{-2})','FontWeight','bold')
-% ylabel('Cell Voltage (V)','FontWeight','bold')
-% title('Voltage')
+% plot(t,Cac,'LineWidth',1,'Displayname','Acetate conc')
+% hold on
+% plot(t,Cco2,'LineWidth',1,'Displayname','CO2 conc')
+% hold on 
+% plot(t,Co2,'LineWidth',1,'Displayname','O2 conc')
+% hold on 
+% plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
+% hold on
+% plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
+% xlabel('Time (h)','FontWeight','bold')
+% ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+% ylim([-0.1 1.6])
+% grid
+% title('All concentrations')
+% legend
+% 
+% 
+% % figure(2)
+% % % Top two plots
+% % tiledlayout(2,2)
+% % 
+% % nexttile([1 2])
+% % plot(icell,Cac,'k','LineWidth',1)
+% % xlabel('Current density (A m^{-2})','FontWeight','bold')
+% % ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
+% % title('Acetate concentration')
+% % 
+% % nexttile([1 2])
+% % plot(icell,Ucell,'k','LineWidth',1)
+% % xlabel('Current density (A m^{-2})','FontWeight','bold')
+% % ylabel('Cell Voltage (V)','FontWeight','bold')
+% % title('Voltage')
 
