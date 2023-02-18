@@ -118,20 +118,22 @@ Ucell = zeros(1,length(t)); % (V)
 % Concentrations
 % Overpotentials
 
-icellM = zeros(1,12);
-r1M = zeros(1,12);
-r2M = zeros(1,12);
-CacM = zeros(1,12);
-Cco2M = zeros(1,12);
-ChM = zeros(1,12);
-CmM = zeros(1,12);
-CohM = zeros(1,12);
-Co2M =zeros(1,12);
-CxM = zeros(1,12);
-etaAM = zeros(1,12);
-etaCM = zeros(1,12);
+icellMAX = 12;
 
-for icell = 0:1:12
+icellM = zeros(1,length(icellMAX));
+r1M = zeros(1,length(icellMAX));
+r2M = zeros(1,length(icellMAX));
+CacM = zeros(1,length(icellMAX));
+Cco2M = zeros(1,length(icellMAX));
+ChM = zeros(1,length(icellMAX));
+CmM = zeros(1,length(icellMAX));
+CohM = zeros(1,length(icellMAX));
+Co2M =zeros(1,length(icellMAX));
+CxM = zeros(1,length(icellMAX));
+etaAM = zeros(1,length(icellMAX));
+etaCM = zeros(1,length(icellMAX));
+
+for icell = 0:1:icellMAX
 
     Nm = 3600*icell/F;
 
@@ -279,6 +281,7 @@ title("Reaction Rates")
 grid
 grid minor
 ylim([-0.12 0.08])
+yticks(-0.12:0.04:0.08)
 ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
@@ -306,15 +309,15 @@ ylabel('Concentration (mol m^{-3})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 
 % Calculate pH and pOH
-phAnode = log10(ChM*1000); % Convert to moles per litre
-phCathode = log10(CohM*1000);
+phAnode = -log10(ChM/1E3); % Convert to moles per litre
+phCathode = -log10(CohM/1E3);
 
 nexttile
 plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o')
 hold on
 plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o')
 hold off
-title("Reaction Rates")
+title("Cell pH")
 grid
 grid minor
 ylabel('pH','FontWeight','bold')
@@ -326,10 +329,10 @@ plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o')
 hold on
 plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o')
 hold off
-title("Reaction Rates")
+title("Overpotentials")
 grid
 grid minor
-ylabel('pH','FontWeight','bold')
+ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
