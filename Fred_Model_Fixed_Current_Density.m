@@ -133,11 +133,15 @@ CxM = zeros(1,length(icellMAX));
 etaAM = zeros(1,length(icellMAX));
 etaCM = zeros(1,length(icellMAX));
 
-for icell = 0:1:icellMAX
+inc = 0; % Incremental value to let me do smaller increments of the current density
+
+for icell = 0:0.01:icellMAX
 
     Nm = 3600*icell/F;
+    
+    inc = inc +1;
 
-    icellM(icell+1) = icell;
+    icellM(inc) = icell;
     %% Initial Value Assignment
 
     % Mass balance concentration values
@@ -251,31 +255,31 @@ for icell = 0:1:icellMAX
     
     end
 
-    r1M(icell+1) = r1(end);
-    r2M(icell+1) = r2(end);
-    CacM(icell+1) = Cac(end);
-    Cco2M(icell+1) = Cco2(end);
-    ChM(icell+1) = Ch(end);
-    CmM(icell+1) = Cm(end);
-    CohM(icell+1) = Coh(end);
-    Co2M(icell+1) =Co2(end);
-    CxM(icell+1) = Cx(end);
-    etaAM(icell+1) = etaA(end);
-    etaCM(icell+1) = etaC(end);
+    r1M(inc) = r1(end);
+    r2M(inc) = r2(end);
+    CacM(inc) = Cac(end);
+    Cco2M(inc) = Cco2(end);
+    ChM(inc) = Ch(end);
+    CmM(inc) = Cm(end);
+    CohM(inc) = Coh(end);
+    Co2M(inc) =Co2(end);
+    CxM(inc) = Cx(end);
+    etaAM(inc) = etaA(end);
+    etaCM(inc) = etaC(end);
 
 
        
 end
 
-
+MS = 1.75; % 'MarkerSize' value for plots 
 
 
 figure(1)
 tiledlayout(2,2)
 nexttile
-plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o')
+plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o')
+plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o','MarkerSize',MS)
 hold off
 title("Reaction Rates")
 grid
@@ -287,19 +291,19 @@ xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
 nexttile
-plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o')
+plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o')
+plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o','MarkerSize',MS)
 hold on
-% plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o')
+% plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o','MarkerSize',MS)
 % hold on
-plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o')
+plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o')
+% plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o','MarkerSize',MS)
+% hold on
+plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o')
-hold on
-plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o')
+plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o','MarkerSize',MS)
 hold off
 grid 
 grid minor
@@ -313,9 +317,9 @@ phAnode = -log10(ChM/1E3); % Convert to moles per litre
 phCathode = 14 - -log10(CohM/1E3);
 
 nexttile
-plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o')
+plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o')
+plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
 hold off
 title("Cell pH")
 grid
@@ -325,9 +329,9 @@ xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
 nexttile
-plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o')
+plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
 hold on
-plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o')
+plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
 hold off
 title("Overpotentials")
 grid
