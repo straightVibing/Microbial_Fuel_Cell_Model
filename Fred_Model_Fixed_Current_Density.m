@@ -295,8 +295,8 @@ hold on
 % hold on
 plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o')
 hold on
-% plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o')
-% hold on
+plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o')
+hold on
 plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o')
 hold on
 plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o')
@@ -310,7 +310,7 @@ xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 
 % Calculate pH and pOH
 phAnode = -log10(ChM/1E3); % Convert to moles per litre
-phCathode = -log10(CohM/1E3);
+phCathode = 14 - -log10(CohM/1E3);
 
 nexttile
 plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o')
