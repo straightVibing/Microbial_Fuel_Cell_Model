@@ -135,7 +135,7 @@ etaCM = zeros(1,length(icellMAX));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
-for icell = 0:0.01:icellMAX
+for icell = 0:0.1:icellMAX
 
     Nm = 3600*icell/F;
     
