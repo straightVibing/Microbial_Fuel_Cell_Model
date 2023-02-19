@@ -53,6 +53,10 @@ CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
                    % Should this be fixed as well?
 
 
+% Surface area of electrode page 2 of Zheng in the experimental section
+% 2 Strips of graphite felt 4.5cm by 1cm by 0.5 cm
+Ac = 9E-4;
+
 % Cell architecture
 U0 = 0.77; % Cell open circuit potential (V)
 dm = 1.778E-4; % Thickness of membrane (m)
@@ -275,6 +279,19 @@ for icell = 0:0.1:icellMAX
        
 end
 
+%% Calculations for plots and results
+
+% Calculate pH and pOH
+phAnode = -log10(ChM/1E3); % Convert to moles per litre
+phCathode = 14 - -log10(CohM/1E3);
+
+% Calculate power density
+powerDensityM = icellM.*UcellM; % W m-2
+                                % This works because the current density is
+                                % A m-2 multiplied by voltage = W m-2
+
+
+%% Plotting
 MS = 1.75; % 'MarkerSize' value for plots 
 
 
@@ -316,9 +333,6 @@ title('All concentrations')
 ylabel('Concentration (mol m^{-3})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 
-% Calculate pH and pOH
-phAnode = -log10(ChM/1E3); % Convert to moles per litre
-phCathode = 14 - -log10(CohM/1E3);
 
 nexttile
 plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
@@ -353,7 +367,18 @@ ylabel('Cell Voltage (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-%% Plotting
+
+figure(3)
+plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
+title("Power Density")
+grid
+grid minor
+ylabel('Power Density (W m^{-2})','FontWeight','bold')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+legend
+
+
+
 % figure(1)
 % % Top two plots
 % tiledlayout(2,2)
