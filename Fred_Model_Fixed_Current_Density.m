@@ -132,6 +132,7 @@ Co2M =zeros(1,length(icellMAX));
 CxM = zeros(1,length(icellMAX));
 etaAM = zeros(1,length(icellMAX));
 etaCM = zeros(1,length(icellMAX));
+UcellM = zeros(1,length(icellMAX));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
@@ -268,6 +269,7 @@ for icell = 0:0.1:icellMAX
     CxM(inc) = Cx(end);
     etaAM(inc) = etaA(end);
     etaCM(inc) = etaC(end);
+    UcellM(inc) = Ucell(end);
 
 
        
@@ -342,6 +344,14 @@ ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
+figure(2)
+plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
+title("Cell Voltage")
+grid
+grid minor
+ylabel('Cell Voltage (V)','FontWeight','bold')
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+legend
 
 %% Plotting
 % figure(1)
