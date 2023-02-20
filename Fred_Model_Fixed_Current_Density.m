@@ -46,12 +46,6 @@ Co2IN = 0.3125; % Initial concentration of O2 (mol m-3)
 CohIN = 0.0; % Initial concentration of OH- (mol m-3)
 CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
-% Fixed current density
-
-%icell = 10; % Cell current density (A m-2)
-%Nm = 3600*icell/F; % Superficial flux of cations through the membrane (mol m-2 h-1)
-                   % Should this be fixed as well?
-
 
 % Surface area of electrode page 2 of Zheng in the experimental section
 % 2 Strips of graphite felt 4.5cm by 1cm by 0.5 cm
@@ -159,44 +153,25 @@ for icell = 0:0.1:icellMAX
     Coh(1) = CohIN;
     Cm(1) = CmIN;
     
-    % Mass balance concentration values
-    % As defined by me to get over issues with the mass balance
-    % If Cac(1) = CacIn then dCac/dt = 0
-    % A result of incorrect or poorly ordered equations
-    % If I can't fix them then I should find concentrations for specific times
-    % and not t = 0
-    
-    
-    % Cac(1) = CacIN;
-    % Cco2(1) = 1;
-    % Ch(1) = 1;
-    % Cx(1) = 1;
-    % Co2(1) = Co2IN;
-    % Coh(1) = 1;
-    % Cm(1) = 1;
-    
-    % Overpotentials
-    
-    
-    % Reaction rates
-    % From Zheng et al
-    % Anode reaction rate
-    %r1(1) = k01*exp((alpha*F)/(R*T)*etaA(1))*(Cac(1)/(Kac+Cac(1)))*Cx(1);
-    
+
+   
+    % Anode steady state reaction rate  
     r1(1) = 3600*icell/(8*F);
-    
+
+
+    % Anode overpotential at steady state
     etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN -r1(1)*(Am/Qa)) +1)); % (V)
-                    % r1 is initially 0 @ t = 0
                     % Taken from page 7 of Zheng and gives -0.251395962275225
                     % Based on Figure 4 (d) I believe this is correct 
     
 
     
-    % Cathode reaction rate
-    %r2(1) = -k02*Co2(1)/(Ko2+Co2(1))*exp((beta-1)*F/(R*T)*etaC(1));
+    % Cathode steady state reaction rate
     
     r2(1) = -3600*icell/(4*F);
 
+
+    % Cathode overpotential at steady state
     etaC(1) = R*T/(F*(beta-1))*log(r2(1)/-k02*(Ko2+Co2(1))/(Co2(1)));
 
     
@@ -213,12 +188,7 @@ for icell = 0:0.1:icellMAX
     
     Cac(i+1) = Cac(i) + d_t*(Qa*(CacIN - Cac(i)) - Am*r1(i))/Va; % Acetate mass balance
     
-    % Test for weirdness
-    
-    if isnan(r1(i))
-        disp(i)
-        break
-    end
+
     
     
     Cco2(i+1) = Cco2(i) + d_t*(Qa*(Cco2IN - Cco2(i)) + 2*Am*r1(i))/Va; % Dissolved CO2 mass balance
