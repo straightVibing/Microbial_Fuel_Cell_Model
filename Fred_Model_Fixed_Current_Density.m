@@ -14,7 +14,7 @@ close all
 
 
 %% Timestep definition
-tmax = 600;
+tmax = 6000;
 d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -116,7 +116,7 @@ Ucell = zeros(1,length(t)); % (V)
 % Concentrations
 % Overpotentials
 
-icellMAX = 12;
+icellMAX = 11.5;
 
 icellM = zeros(1,length(icellMAX));
 r1M = zeros(1,length(icellMAX));
@@ -134,7 +134,7 @@ UcellM = zeros(1,length(icellMAX));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
-for icell = 0:0.1:icellMAX
+for icell = 0.1:0.1:icellMAX
 
     Nm = 3600*icell/F;
     
@@ -253,7 +253,7 @@ end
 
 % Calculate pH and pOH
 phAnode = -log10(ChM/1E3); % Convert to moles per litre
-phCathode = 14 - -log10(CohM/1E3);
+phCathode = 14 -  -log10(CohM/1E3);
 
 % Calculate power density
 powerDensityM = icellM.*UcellM; % W m-2
