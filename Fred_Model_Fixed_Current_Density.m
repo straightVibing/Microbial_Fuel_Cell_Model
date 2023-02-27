@@ -116,7 +116,7 @@ Ucell = zeros(1,length(t)); % (V)
 % Concentrations
 % Overpotentials
 
-icellMAX = 11.5;
+icellMAX = 12;
 
 icellM = zeros(1,length(icellMAX));
 r1M = zeros(1,length(icellMAX));
@@ -275,8 +275,8 @@ hold off
 title("Reaction Rates")
 grid
 grid minor
-ylim([-0.12 0.08])
-yticks(-0.12:0.04:0.08)
+%ylim([-0.12 0.08])
+%yticks(-0.12:0.04:0.08)
 ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
