@@ -117,7 +117,7 @@ Ucell = zeros(1,length(t)); % (V)
 % Concentrations
 % Overpotentials
 
-icellMAX = 12;
+icellMAX = 11.5;
 
 icellM = zeros(1,length(icellMAX));
 r1M = zeros(1,length(icellMAX));
@@ -135,7 +135,7 @@ UcellM = zeros(1,length(icellMAX));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
-for icell = 0:0.1:icellMAX
+for icell = 0.1:0.1:icellMAX
 
     Nm = 3600*icell/F;
     
@@ -348,7 +348,18 @@ ylabel('Power Density (W m^{-2})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-
+figure(4)
+yyaxis left
+plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
+ylabel('Cell Voltage (V)','FontWeight','bold')
+yyaxis right
+plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
+ylabel('Power Density (W m^{-2})','FontWeight','bold')
+title("Polarisation and Power Curve")
+grid
+grid minor
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+legend
 
 % figure(1)
 % % Top two plots
