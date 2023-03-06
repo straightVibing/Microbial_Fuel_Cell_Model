@@ -329,24 +329,24 @@ ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-figure(2)
-plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
-title("Cell Voltage")
-grid
-grid minor
-ylabel('Cell Voltage (V)','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
-
-
-figure(3)
-plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
-title("Power Density")
-grid
-grid minor
-ylabel('Power Density (W m^{-2})','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
+% figure(2)
+% plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
+% title("Cell Voltage")
+% grid
+% grid minor
+% ylabel('Cell Voltage (V)','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+% 
+% 
+% figure(3)
+% plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
+% title("Power Density")
+% grid
+% grid minor
+% ylabel('Power Density (W m^{-2})','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
 
 figure(4)
 yyaxis left
