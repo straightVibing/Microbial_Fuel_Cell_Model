@@ -116,7 +116,7 @@ Ucell = zeros(1,length(t)); % (V)
 % Concentrations
 % Overpotentials
 
-icellMAX = 12;
+icellMAX = 11.5;
 
 icellM = zeros(1,length(icellMAX));
 r1M = zeros(1,length(icellMAX));
@@ -328,26 +328,37 @@ ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-figure(2)
-plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
-title("Cell Voltage")
-grid
-grid minor
+% figure(2)
+% plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
+% title("Cell Voltage")
+% grid
+% grid minor
+% ylabel('Cell Voltage (V)','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+% 
+% 
+% figure(3)
+% plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
+% title("Power Density")
+% grid
+% grid minor
+% ylabel('Power Density (W m^{-2})','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+
+figure(4)
+yyaxis left
+plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
 ylabel('Cell Voltage (V)','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
-
-
-figure(3)
+yyaxis right
 plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
-title("Power Density")
+ylabel('Power Density (W m^{-2})','FontWeight','bold')
+title("Polarisation and Power Curve")
 grid
 grid minor
-ylabel('Power Density (W m^{-2})','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
-
-
 
 % figure(1)
 % % Top two plots
