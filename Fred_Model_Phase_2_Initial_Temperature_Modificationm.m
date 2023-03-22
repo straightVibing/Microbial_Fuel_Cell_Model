@@ -1,7 +1,7 @@
 %% Microbial Fuel Cell Model
 
 % Steady state model
-
+% Ran at 293 K
 clc
 clear  
 close all 
@@ -14,7 +14,7 @@ close all
 
 
 %% Timestep definition
-tmax = 6000;
+tmax = 600;
 d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -27,7 +27,7 @@ P = 1; % Pressure (atm)
 
 % Operational Parameters
 
-T = 303; % Operational temperature (K)
+T = 293; % Operational temperature (K)
          % Will be varying this later
 
 Va = 5.5E-5; % Volume of anodic compartment (m3)
@@ -68,8 +68,8 @@ k02 = 3.288E-5; % Rate constant of cathode reaction at standard conditions
 
 
 % These are also temperature dependent 
-alpha = 0.051; % Charge transfer coefficient in the anode
-beta = 0.663; % Charge transfer coefficient in the cathode
+alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
+beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
 Kac = 0.592; % Half velocity rate constant for acetate (mol m-3)
 Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
 
