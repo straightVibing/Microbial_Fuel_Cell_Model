@@ -328,25 +328,6 @@ ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-% figure(2)
-% plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
-% title("Cell Voltage")
-% grid
-% grid minor
-% ylabel('Cell Voltage (V)','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
-% 
-% 
-% figure(3)
-% plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
-% title("Power Density")
-% grid
-% grid minor
-% ylabel('Power Density (W m^{-2})','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
-
 figure(4)
 yyaxis left
 plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
@@ -360,60 +341,4 @@ grid minor
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
-% figure(1)
-% % Top two plots
-% tiledlayout(2,2)
-% 
-% nexttile
-% plot(t,r1,'LineWidth',1,'Displayname','r1')
-% hold on
-% plot(t,r2,'LineWidth',1,'Displayname','r2')
-% hold off
-% xlabel('Time (h)','FontWeight','bold')
-% ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
-% grid
-% title('Reaction rates')
-% legend
-% 
-% nexttile
-% plot(t,Cac,'k','LineWidth',1)
-% xlabel('Time (h)','FontWeight','bold')
-% ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
-% ylim([0 1.6])
-% grid
-% title('Acetate concentration')
-% 
-% nexttile([1 2])
-% plot(t,Cac,'LineWidth',1,'Displayname','Acetate conc')
-% hold on
-% plot(t,Cco2,'LineWidth',1,'Displayname','CO2 conc')
-% hold on 
-% plot(t,Co2,'LineWidth',1,'Displayname','O2 conc')
-% hold on 
-% plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
-% hold on
-% plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
-% xlabel('Time (h)','FontWeight','bold')
-% ylabel('Concentration (mol m^{-3})','FontWeight','bold')
-% ylim([-0.1 1.6])
-% grid
-% title('All concentrations')
-% legend
-% 
-% 
-% % figure(2)
-% % % Top two plots
-% % tiledlayout(2,2)
-% % 
-% % nexttile([1 2])
-% % plot(icell,Cac,'k','LineWidth',1)
-% % xlabel('Current density (A m^{-2})','FontWeight','bold')
-% % ylabel('Acetate Concentration (mol m^{-3})','FontWeight','bold')
-% % title('Acetate concentration')
-% % 
-% % nexttile([1 2])
-% % plot(icell,Ucell,'k','LineWidth',1)
-% % xlabel('Current density (A m^{-2})','FontWeight','bold')
-% % ylabel('Cell Voltage (V)','FontWeight','bold')
-% % title('Voltage')
 
