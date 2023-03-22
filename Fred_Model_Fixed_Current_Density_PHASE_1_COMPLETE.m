@@ -75,7 +75,7 @@ Kac = 0.592; % Half velocity rate constant for acetate (mol m-3)
 Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
 
 
-% Current density
+% Capacitances
 CapA = 4E2; % Capacitance of anode (F m-2)
 CapC = 5E2; % Capacitance of cathode (F m-2)
 
