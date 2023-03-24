@@ -2,6 +2,8 @@
 
 % Steady state model
 % Ran at 293 K
+tic % start of timer
+
 clc
 clear  
 close all 
@@ -29,8 +31,6 @@ P = 1; % Pressure (atm)
 
 % Operational Parameters
 
-T = 293; % Operational temperature (K)
-         % Will be varying this later
 
 Va = 5.5E-5; % Volume of anodic compartment (m3)
 Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 h-1)
@@ -83,15 +83,17 @@ CapC = 5E2; % Capacitance of cathode (F m-2)
 
 %% Operational Parameters
 
-T_track = zeros(1,length(T_Span));
+%Results_track = zeros(1,length(T_Span));
 T_inc = 1;
 
 for T = T_Span % Operational temperature (K) 
          % Using linspace for now to get 10 clear data points, haven't
          % decided on the spacing between 5-30 degrees C yet
 
-T_track(T_inc) = T;
-T_inc = T_inc+1;
+Results_track = cell(1,length(T_Span));
+
+disp(T)
+
 % Charge transfer coefficients
 alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
 beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
@@ -136,24 +138,25 @@ Ucell = zeros(1,length(t)); % (V)
 % Overpotentials
 
 icellMAX = 11.5;
+icellSPAN = 0.1:0.1:icellMAX;
 
-icellM = zeros(1,length(icellMAX));
-r1M = zeros(1,length(icellMAX));
-r2M = zeros(1,length(icellMAX));
-CacM = zeros(1,length(icellMAX));
-Cco2M = zeros(1,length(icellMAX));
-ChM = zeros(1,length(icellMAX));
-CmM = zeros(1,length(icellMAX));
-CohM = zeros(1,length(icellMAX));
-Co2M =zeros(1,length(icellMAX));
-CxM = zeros(1,length(icellMAX));
-etaAM = zeros(1,length(icellMAX));
-etaCM = zeros(1,length(icellMAX));
-UcellM = zeros(1,length(icellMAX));
+icellM = zeros(1,length(icellSPAN));
+r1M = zeros(1,length(icellSPAN));
+r2M = zeros(1,length(icellSPAN));
+CacM = zeros(1,length(icellSPAN));
+Cco2M = zeros(1,length(icellSPAN));
+ChM = zeros(1,length(icellSPAN));
+CmM = zeros(1,length(icellSPAN));
+CohM = zeros(1,length(icellSPAN));
+Co2M =zeros(1,length(icellSPAN));
+CxM = zeros(1,length(icellSPAN));
+etaM = zeros(1,length(icellSPAN));
+etcM = zeros(1,length(icellSPAN));
+UcellM = zeros(1,length(icellSPAN));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
-for icell = 0.1:0.1:icellMAX
+for icell = icellSPAN
 
     Nm = 3600*icell/F;
     
@@ -262,8 +265,8 @@ for icell = 0.1:0.1:icellMAX
     CohM(inc) = Coh(end);
     Co2M(inc) =Co2(end);
     CxM(inc) = Cx(end);
-    etaAM(inc) = etaA(end);
-    etaCM(inc) = etaC(end);
+    etaM(inc) = etaA(end);
+    etcM(inc) = etaC(end);
     UcellM(inc) = Ucell(end);
 
 
@@ -281,7 +284,11 @@ powerDensityM = icellM.*UcellM; % W m-2
                                 % This works because the current density is
                                 % A m-2 multiplied by voltage = W m-2
 
+Results_track(T_inc) = {[r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaM' etcM' UcellM' powerDensityM']};
+T_inc = T_inc+1;
 end 
+
+toc % end of timer
 
 %% Plotting
 % MS = 1.75; % 'MarkerSize' value for plots 
