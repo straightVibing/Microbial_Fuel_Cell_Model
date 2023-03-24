@@ -12,6 +12,8 @@ close all
 % Cathode reaction: O2 + 4e- + 2H20 > 4OH-
 % Anode and cathode overpotentials remain fixed
 
+%% Decide Temperature Span
+T_Span = linspace(278,303,10);
 
 %% Timestep definition
 tmax = 600;
@@ -78,12 +80,18 @@ Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
 CapA = 4E2; % Capacitance of anode (F m-2)
 CapC = 5E2; % Capacitance of cathode (F m-2)
 
+
 %% Operational Parameters
 
-for T = linspace(278,303,10) % Operational temperature (K) 
+T_track = zeros(1,length(T_Span));
+T_inc = 1;
+
+for T = T_Span % Operational temperature (K) 
          % Using linspace for now to get 10 clear data points, haven't
          % decided on the spacing between 5-30 degrees C yet
 
+T_track(T_inc) = T;
+T_inc = T_inc+1;
 % Charge transfer coefficients
 alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
 beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
@@ -243,6 +251,8 @@ for icell = 0.1:0.1:icellMAX
     
     end
 
+    % The M denotes that I'm tracking the inner loop end values so i can
+    % plot them against the 115 data points for the current density
     r1M(inc) = r1(end);
     r2M(inc) = r2(end);
     CacM(inc) = Cac(end);
