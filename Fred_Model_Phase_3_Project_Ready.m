@@ -88,9 +88,6 @@ Results_track = cell(1,length(T_Span));
 for T = T_Span 
         % Operational temperature (K) % Using linspace for now to get 10 clear data points, haven't % decided on the spacing between 5-30 degrees C yet
 
-
-%disp(T)
-
 % Charge transfer coefficients
 alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
 beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
@@ -281,9 +278,38 @@ powerDensityM = icellM.*UcellM; % W m-2
                                 % This works because the current density is
                                 % A m-2 multiplied by voltage = W m-2
 
-Results_track(T_inc) = {[r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaM' etcM' UcellM' powerDensityM']};
+Results_track(T_inc) = {[ r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaM' etcM' UcellM' powerDensityM']};
 T_inc = T_inc+1;
 end 
+
+
+
+%% Plotting Calculation
+% Now that the data has been calculated, I need to parse through it so that
+% it can be plotted 
+
+leg = strings(1,length(T_Span));
+for conv_inc = 1:1:length(T_Span)
+    leg(conv_inc) = num2str(T_Span(conv_inc));
+end
+
+
+hold on 
+for R_inc = 1:1:length(Results_track)
+yyaxis left
+plot(icellSPAN, Results_track{R_inc}(:,13));
+ylabel('Cell Voltage (V)','FontWeight','bold')
+yyaxis right
+plot(icellSPAN, Results_track{R_inc}(:,12))
+ylabel('Power Density (W m^{-2})','FontWeight','bold')
+end
+grid 
+grid minor 
+title("Polarisation and Power Curves")
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+
+legend(leg)
+%legend(T_Span)
 
 toc % end of timer
 
