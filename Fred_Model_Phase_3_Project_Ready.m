@@ -70,8 +70,6 @@ k02 = 3.288E-5; % Rate constant of cathode reaction at standard conditions
 
 
 % These are also temperature dependent 
-alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
-beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
 Kac = 0.592; % Half velocity rate constant for acetate (mol m-3)
 Ko2 = 0.004; % Half velocity rate constant for dissolved oxygen (mol m-3)
 
@@ -86,12 +84,12 @@ CapC = 5E2; % Capacitance of cathode (F m-2)
 %Results_track = zeros(1,length(T_Span));
 T_inc = 1;
 
+Results_track = cell(1,length(T_Span));
 for T = T_Span 
         % Operational temperature (K) % Using linspace for now to get 10 clear data points, haven't % decided on the spacing between 5-30 degrees C yet
 
-Results_track = cell(1,length(T_Span));
 
-disp(T)
+%disp(T)
 
 % Charge transfer coefficients
 alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
@@ -155,7 +153,7 @@ UcellM = zeros(1,length(icellSPAN));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
 
-for icell = icellSPAN
+    for icell = icellSPAN
 
     Nm = 3600*icell/F;
     
@@ -270,7 +268,7 @@ for icell = icellSPAN
 
 
        
-end
+    end
 
 %% Calculations for plots and results
 
