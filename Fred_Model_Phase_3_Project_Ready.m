@@ -86,9 +86,8 @@ CapC = 5E2; % Capacitance of cathode (F m-2)
 %Results_track = zeros(1,length(T_Span));
 T_inc = 1;
 
-for T = T_Span % Operational temperature (K) 
-         % Using linspace for now to get 10 clear data points, haven't
-         % decided on the spacing between 5-30 degrees C yet
+for T = T_Span 
+        % Operational temperature (K) % Using linspace for now to get 10 clear data points, haven't % decided on the spacing between 5-30 degrees C yet
 
 Results_track = cell(1,length(T_Span));
 
