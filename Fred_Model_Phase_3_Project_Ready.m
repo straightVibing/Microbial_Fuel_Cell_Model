@@ -293,7 +293,7 @@ for conv_inc = 1:1:length(T_Span)
     leg(conv_inc) = num2str(T_Span(conv_inc));
 end
 
-
+figure(1)
 hold on 
 for R_inc = 1:1:length(Results_track)
 yyaxis left
@@ -310,6 +310,20 @@ xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 
 legend(leg)
 %legend(T_Span)
+hold off
+
+figure(2)
+hold on
+for R_inc = 1:1:length(Results_track)
+plot(icellSPAN, Results_track{R_inc}(:,10));
+ylabel('Overpotential (V)','FontWeight','bold')
+
+end
+grid 
+grid minor 
+title("Polarisation and Power Curves")
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+
 
 toc % end of timer
 
