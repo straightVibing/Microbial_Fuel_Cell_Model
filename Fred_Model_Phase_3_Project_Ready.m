@@ -317,12 +317,12 @@ hold on
 for R_inc = 1:1:length(Results_track)
 plot(icellSPAN, Results_track{R_inc}(:,10));
 ylabel('Overpotential (V)','FontWeight','bold')
-
 end
 grid 
 grid minor 
-title("Polarisation and Power Curves")
+title("Overpotential temperature dependence")
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+legend(leg)
 
 
 toc % end of timer
