@@ -15,7 +15,8 @@ close all
 % Anode and cathode overpotentials remain fixed
 
 %% Decide Temperature Span
-T_Span = linspace(278,303,10);
+%T_Span = linspace(278,303,10);
+T_Span = 303:-5:278;
 
 %% Timestep definition
 tmax = 600;
@@ -54,7 +55,7 @@ CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 Ac = 9E-4;
 
 % Cell architecture
-U0 = 0.77; % Cell open circuit potential (V)
+%U0 = 0.77; % Cell open circuit potential (V)
 dm = 1.778E-4; % Thickness of membrane (m)
 dcell = 2.2E-2; % Distance between anode and cathode in cell (m)
 km = 17; % Electrical conductivity of membrane (ohm-1 m-1)
@@ -89,9 +90,10 @@ for T = T_Span
         % Operational temperature (K) % Using linspace for now to get 10 clear data points, haven't % decided on the spacing between 5-30 degrees C yet
 
 % Charge transfer coefficients
-alpha = 0.051 *T/303; % Charge transfer coefficient in the anode
-beta = 0.663 *T/303; % Charge transfer coefficient in the cathode
+alpha = 0.051;%*T/303; % Charge transfer coefficient in the anode
+beta = 0.663;%*T/303; % Charge transfer coefficient in the cathode
 
+U0 = 0.77*T/303; % Cell open circuit potential (V)
 
 %% Matrix creation
 % Uses static allocation to reduce compute time compared to dynamic 
@@ -144,8 +146,8 @@ CmM = zeros(1,length(icellSPAN));
 CohM = zeros(1,length(icellSPAN));
 Co2M =zeros(1,length(icellSPAN));
 CxM = zeros(1,length(icellSPAN));
-etaM = zeros(1,length(icellSPAN));
-etcM = zeros(1,length(icellSPAN));
+etaAM = zeros(1,length(icellSPAN));
+etaCM = zeros(1,length(icellSPAN));
 UcellM = zeros(1,length(icellSPAN));
 
 inc = 0; % Incremental value to let me do smaller increments of the current density
@@ -176,12 +178,12 @@ inc = 0; % Incremental value to let me do smaller increments of the current dens
 
 
     % Anode overpotential at steady state
-    etaA(1) = R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN -r1(1)*(Am/Qa)) +1)); % (V)
+    etaA(1) = (R*T/(alpha*F)) * log(((Qa + Va*Kdec*fx)/(k01*Yac*Am*fx) * (Kac/(CacIN - r1(1)*(Am/Qa)) +1)));
+     %R*T/(alpha*F)*log((Qa+Va*Kdec*fx)/(k01*Yac*Am*fx)*((Kac)/(CacIN -r1(1)*(Am/Qa)) +1)); % (V)
                     % Taken from page 7 of Zheng and gives -0.251395962275225
                     % Based on Figure 4 (d) I believe this is correct 
     
 
-    
     % Cathode steady state reaction rate
     
     r2(1) = -3600*icell/(4*F);
@@ -193,8 +195,8 @@ inc = 0; % Incremental value to let me do smaller increments of the current dens
     
     % Cell Voltage
     
-    Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
-
+    % Ucell(1) = U0 - etaA(1) + etaC(1) -(dm/km + dcell/kaq)*icell;
+    Ucell(1) = U0 - etaA(1) + etaC(1) -icell*(dm/km);
 
     %% Equations
     
@@ -244,8 +246,8 @@ inc = 0; % Incremental value to let me do smaller increments of the current dens
     
     % Cell voltage
     
-    Ucell(i+1) = U0 - etaA(i) + etaC(i) -(dm/km + dcell/kaq)*icell;
-    
+    %Ucell(i+1) = U0 - etaA(i) + etaC(i) -(dm/km + dcell/kaq)*icell;
+    Ucell(i+1) = U0 - etaA(i) + etaC(i) -icell*(dm/km);
     end
 
     % The M denotes that I'm tracking the inner loop end values so i can
@@ -259,8 +261,8 @@ inc = 0; % Incremental value to let me do smaller increments of the current dens
     CohM(inc) = Coh(end);
     Co2M(inc) =Co2(end);
     CxM(inc) = Cx(end);
-    etaM(inc) = etaA(end);
-    etcM(inc) = etaC(end);
+    etaAM(inc) = etaA(end);
+    etaCM(inc) = etaC(end);
     UcellM(inc) = Ucell(end);
 
 
@@ -278,7 +280,7 @@ powerDensityM = icellM.*UcellM; % W m-2
                                 % This works because the current density is
                                 % A m-2 multiplied by voltage = W m-2
 
-Results_track(T_inc) = {[ r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaM' etcM' UcellM' powerDensityM']};
+Results_track(T_inc) = {[ r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaAM' etaCM' UcellM' powerDensityM']};
 T_inc = T_inc+1;
 end 
 
@@ -288,6 +290,9 @@ end
 % Now that the data has been calculated, I need to parse through it so that
 % it can be plotted 
 
+lw = 2; % Linewidth parameter for plots
+t_FS = 24; % Title fontsize for the plots
+a_FS = 20; % Axis fontsize for plots 
 leg = strings(1,length(T_Span));
 for conv_inc = 1:1:length(T_Span)
     leg(conv_inc) = num2str(T_Span(conv_inc));
@@ -297,18 +302,20 @@ figure(1)
 hold on 
 for R_inc = 1:1:length(Results_track)
 yyaxis left
-plot(icellSPAN, Results_track{R_inc}(:,13));
-ylabel('Cell Voltage (V)','FontWeight','bold')
+plot(icellSPAN, Results_track{R_inc}(:,12),'LineWidth',lw);
+ylabel('Cell Voltage (V)','FontWeight','bold','FontSize',a_FS)
 yyaxis right
-plot(icellSPAN, Results_track{R_inc}(:,12))
-ylabel('Power Density (W m^{-2})','FontWeight','bold')
+plot(icellSPAN, Results_track{R_inc}(:,13),'LineWidth',lw)
+ylabel('Power Density (W m^{-2})','FontWeight','bold','FontSize',a_FS)
 end
 grid 
 grid minor 
-title("Polarisation and Power Curves")
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+t = title("Polarisation and Power Curves");
+t.FontSize = t_FS;
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold','FontSize',a_FS)
 
-legend(leg)
+lgd = legend(leg);
+lgd.Title.String = 'Temperature (K)';
 %legend(T_Span)
 hold off
 
@@ -320,9 +327,39 @@ ylabel('Overpotential (V)','FontWeight','bold')
 end
 grid 
 grid minor 
-title("Overpotential temperature dependence")
+title("Anode Overpotential temperature dependence")
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend(leg)
+lgd = legend(leg);
+lgd.Title.String = 'Temperature (K)';
+hold off
+
+figure(3)
+hold on
+for R_inc = 1:1:length(Results_track)
+plot(icellSPAN, Results_track{R_inc}(:,11));
+ylabel('Overpotential (V)','FontWeight','bold')
+end
+grid 
+grid minor 
+title("Cathode Overpotential temperature dependence")
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+lgd = legend(leg);
+lgd.Title.String = 'Temperature (K)';
+hold off 
+
+figure(4)
+hold on
+for R_inc = 1:1:length(Results_track)
+plot(icellSPAN, Results_track{R_inc}(:,3));
+ylabel('Acetate concentration (mol m^{-3})','FontWeight','bold')
+end
+grid 
+grid minor 
+title("Acetate Removal Efficiency")
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+lgd = legend(leg);
+lgd.Title.String = 'Temperature (K)';
+hold off 
 
 
 toc % end of timer
