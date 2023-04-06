@@ -348,17 +348,15 @@ lgd.Title.String = 'Temperature (K)';
 hold off 
 
 figure(4)
-hold on
-for R_inc = 1:1:length(Results_track)
-plot(icellSPAN, Results_track{R_inc}(:,3));
-ylabel('Acetate concentration (mol m^{-3})','FontWeight','bold')
-end
+
+cod_removal = (CacIN - CacM)/CacIN *100;
+plot(icellSPAN, cod_removal);
+ylabel('Acetate removal (%)','FontWeight','bold')
 grid 
 grid minor 
 title("Acetate Removal Efficiency")
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-lgd = legend(leg);
-lgd.Title.String = 'Temperature (K)';
+
 hold off 
 
 
