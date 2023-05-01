@@ -280,7 +280,7 @@ powerDensityM = icellM.*UcellM; % W m-2
                                 % This works because the current density is
                                 % A m-2 multiplied by voltage = W m-2
 
-Results_track(T_inc) = {[ r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaAM' etaCM' UcellM' powerDensityM']};
+Results_track(T_inc) = {[ r1M' r2M' CacM' Cco2M' ChM' CmM' CohM' Co2M' CxM' etaAM' etaCM' UcellM' powerDensityM' icellM']};
 T_inc = T_inc+1;
 end 
 
@@ -290,7 +290,7 @@ end
 % Now that the data has been calculated, I need to parse through it so that
 % it can be plotted 
 
-lw = 2; % Linewidth parameter for plots
+lw = 0.5; % Linewidth parameter for plots
 t_FS = 24; % Title fontsize for the plots
 a_FS = 20; % Axis fontsize for plots 
 leg = strings(1,length(T_Span));
@@ -313,133 +313,100 @@ grid minor
 t = title("Polarisation and Power Curves");
 t.FontSize = t_FS;
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold','FontSize',a_FS)
-
 lgd = legend(leg);
 lgd.Title.String = 'Temperature (K)';
 %legend(T_Span)
+
 hold off
 
 figure(2)
-hold on
-for R_inc = 1:1:length(Results_track)
-plot(icellSPAN, Results_track{R_inc}(:,10));
-ylabel('Overpotential (V)','FontWeight','bold')
+hold on 
+for R_inc = 4:1:length(Results_track)
+yyaxis left
+plot(icellSPAN, Results_track{R_inc}(:,12),'LineWidth',lw);
+ylabel('Cell Voltage (V)','FontWeight','bold','FontSize',a_FS)
+yyaxis right
+plot(icellSPAN, Results_track{R_inc}(:,13),'LineWidth',lw)
+ylabel('Power Density (W m^{-2})','FontWeight','bold','FontSize',a_FS)
 end
 grid 
 grid minor 
-title("Anode Overpotential temperature dependence")
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-lgd = legend(leg);
+t = title("Polarisation and Power Curves");
+t.FontSize = t_FS;
+xlabel('Cell Current Density (A m^{-2})','FontWeight','bold','FontSize',a_FS)
+lgd = legend(leg(4:1:length(Results_track)));
 lgd.Title.String = 'Temperature (K)';
+%legend(T_Span)
+
 hold off
 
-figure(3)
-hold on
-for R_inc = 1:1:length(Results_track)
-plot(icellSPAN, Results_track{R_inc}(:,11));
-ylabel('Overpotential (V)','FontWeight','bold')
-end
-grid 
-grid minor 
-title("Cathode Overpotential temperature dependence")
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-lgd = legend(leg);
-lgd.Title.String = 'Temperature (K)';
-hold off 
 
-figure(4)
+% figure(1)
+% hold on 
+% [AX,H1,H2] = plotyy();
+% 
+% for R_inc = 1:1:length(Results_track)
+% plot(H1,icellSPAN,Results_track{R_inc}(:,12))
+% plot(H2,icellSPAN,Results_track{R_inc}(:,13));
+% end
+% set(get(AX(1),'Ylabel'),'String','Cell Voltage (V)','FontSize',a_FS)
+% set(get(AX(2),'Ylabel'),'String','Power Density (W m^{-2})','FontSize',a_FS)
+% grid 
+% grid minor 
+% t = title("Polarisation and Power Curves");
+% t.FontSize = t_FS;
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold','FontSize',a_FS)
+% 
+% lgd = legend(leg);
+% lgd.Title.String = 'Temperature (K)';
+% %legend(T_Span)
+% matlab2tikz('../Report/Figures/p+p.tex');
+% hold off
 
-cod_removal = (CacIN - CacM)/CacIN *100;
-plot(icellSPAN, cod_removal);
-ylabel('Acetate removal (%)','FontWeight','bold')
-grid 
-grid minor 
-title("Acetate Removal Efficiency")
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 
-hold off 
+% figure(3)
+% hold on
+% for R_inc = 1:1:length(Results_track)
+% plot(icellSPAN, Results_track{R_inc}(:,10));
+% ylabel('Overpotential (V)','FontWeight','bold')
+% end
+% grid 
+% grid minor 
+% title("Anode Overpotential temperature dependence")
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% lgd = legend(leg);
+% lgd.Title.String = 'Temperature (K)';
+
+% hold off
+% 
+% figure(4)
+% hold on
+% for R_inc = 1:1:length(Results_track)
+% plot(icellSPAN, Results_track{R_inc}(:,11));
+% ylabel('Overpotential (V)','FontWeight','bold')
+% end
+% grid 
+% grid minor 
+% title("Cathode Overpotential temperature dependence")
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% lgd = legend(leg);
+% lgd.Title.String = 'Temperature (K)';
+% hold off 
+% 
+% figure(5)
+% 
+% cod_removal = (CacIN - CacM)/CacIN *100;
+% plot(icellSPAN, cod_removal);
+% ylabel('Acetate removal (%)','FontWeight','bold')
+% grid 
+% grid minor 
+% title("Acetate Removal Efficiency")
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+
+% hold off 
 
 
 toc % end of timer
 
-%% Plotting
-% MS = 1.75; % 'MarkerSize' value for plots 
-% 
-% 
-% figure(1)
-% tiledlayout(2,2)
-% nexttile
-% plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o','MarkerSize',MS)
-% hold on
-% plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o','MarkerSize',MS)
-% hold off
-% title("Reaction Rates")
-% grid
-% grid minor
-% %ylim([-0.12 0.08])
-% %yticks(-0.12:0.04:0.08)
-% ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
-% 
-% nexttile
-% plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o','MarkerSize',MS)
-% hold on
-% plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o','MarkerSize',MS)
-% hold on
-% % plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o','MarkerSize',MS)
-% % hold on
-% plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o','MarkerSize',MS)
-% hold on
-% % plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o','MarkerSize',MS)
-% % hold on
-% plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o','MarkerSize',MS)
-% hold on
-% plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o','MarkerSize',MS)
-% hold off
-% grid 
-% grid minor
-% legend
-% title('All concentrations')
-% ylabel('Concentration (mol m^{-3})','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% 
-% 
-% nexttile
-% plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
-% hold on
-% plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
-% hold off
-% title("Cell pH")
-% grid
-% grid minor
-% ylabel('pH','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
-% 
-% nexttile
-% plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
-% hold on
-% plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
-% hold off
-% title("Overpotentials")
-% grid
-% grid minor
-% ylabel('Overpotentials (V)','FontWeight','bold')
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
-% 
-% figure(4)
-% yyaxis left
-% plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
-% ylabel('Cell Voltage (V)','FontWeight','bold')
-% yyaxis right
-% plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
-% ylabel('Power Density (W m^{-2})','FontWeight','bold')
-% title("Polarisation and Power Curve")
-% grid
-% grid minor
-% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-% legend
 
 
