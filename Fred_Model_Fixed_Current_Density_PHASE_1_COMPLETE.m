@@ -329,6 +329,8 @@ ylabel('Overpotentials (V)','FontWeight','bold')
 xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 legend
 
+%matlab2tikz('myfile.tex');
+
 % figure(2)
 % plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
 % title("Cell Voltage")
