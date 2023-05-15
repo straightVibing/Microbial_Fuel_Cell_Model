@@ -32,7 +32,6 @@ P = 1; % Pressure (atm)
 
 % Operational Parameters
 
-
 Va = 5.5E-5; % Volume of anodic compartment (m3)
 Qa = 2.25E-5; % Volumetric flowrate into the anode (m3 h-1)
 Am = 5E-4; % Membrane cross section (m^2)
@@ -52,7 +51,7 @@ CmIN = 0.0; % Initial concentration of M+ cations (mol m-3)
 
 % Surface area of electrode page 2 of Zheng in the experimental section
 % 2 Strips of graphite felt 4.5cm by 1cm by 0.5 cm
-Ac = 9E-4;
+Ac = 7.3E-3;
 
 % Cell architecture
 %U0 = 0.77; % Cell open circuit potential (V)

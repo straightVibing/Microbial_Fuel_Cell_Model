@@ -15,7 +15,7 @@ close all
 
 
 %% Timestep definition
-tmax = 600;
+tmax =160;
 d_t=0.01;
 t = 0:d_t:tmax;
 %% Parameter definition
@@ -266,70 +266,106 @@ powerDensityM = icellM.*UcellM; % W m-2
 MS = 1.75; % 'MarkerSize' value for plots 
 
 
-figure(1)
-tiledlayout(2,2)
-nexttile
-plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o','MarkerSize',MS)
-hold on
-plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o','MarkerSize',MS)
-hold off
-title("Reaction Rates")
-grid
-grid minor
-ylim([-0.12 0.08])
-yticks(-0.12:0.04:0.08)
-ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
-
-nexttile
-plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o','MarkerSize',MS)
-hold on
-plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o','MarkerSize',MS)
-hold on
-% plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o','MarkerSize',MS)
+% figure(1)
+% tiledlayout(2,2)
+% nexttile
+% plot(icellM,r1M,'LineWidth',1,'Displayname','r1','Marker','o','MarkerSize',MS)
 % hold on
-plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o','MarkerSize',MS)
-hold on
-% plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o','MarkerSize',MS)
+% plot(icellM,r2M,'LineWidth',1,'Displayname','r2','Marker','o','MarkerSize',MS)
+% hold off
+% title("Reaction Rates")
+% grid
+% grid minor
+% ylim([-0.12 0.08])
+% yticks(-0.12:0.04:0.08)
+% ylabel('Reaction rate (mol m^{-2} h^{-1})','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+% 
+% nexttile
+% plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o','MarkerSize',MS)
 % hold on
-plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o','MarkerSize',MS)
-hold on
-plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o','MarkerSize',MS)
-hold off
-grid 
-grid minor
-legend
-title('All concentrations')
-ylabel('Concentration (mol m^{-3})','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o','MarkerSize',MS)
+% hold on
+% % plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o','MarkerSize',MS)
+% % hold on
+% plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o','MarkerSize',MS)
+% hold on
+% % plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o','MarkerSize',MS)
+% % hold on
+% plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o','MarkerSize',MS)
+% hold off
+% grid 
+% grid minor
+% legend
+% title('All concentrations')
+% ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% 
+% 
+% nexttile
+% plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
+% hold off
+% title("Cell pH")
+% grid
+% grid minor
+% ylabel('pH','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+% 
+% nexttile
+% plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
+% hold off
+% title("Overpotentials")
+% grid
+% grid minor
+% ylabel('Overpotentials (V)','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+% 
+% 
+% figure(5)
+% plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
+% hold off
+% title("Cell pH")
+% grid
+% grid minor
+% ylabel('pH','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
+%matlab2tikz('../Report/Figures/fig4largetimestepPh.tex');
 
+% figure(6)
+% plot(icellM,CacM,'LineWidth',1,'Displayname','Acetate','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,Cco2M,'LineWidth',1,'Displayname','CO2','Marker','o','MarkerSize',MS)
+% hold on
+% % plot(icellM,ChM,'LineWidth',1,'Displayname','H^{+} ions','Marker','o','MarkerSize',MS)
+% % hold on
+% plot(icellM,CmM,'LineWidth',1,'Displayname','Cations','Marker','o','MarkerSize',MS)
+% hold on
+% % plot(icellM,CohM,'LineWidth',1,'Displayname','OH^{-}','Marker','o','MarkerSize',MS)
+% % hold on
+% plot(icellM,Co2M,'LineWidth',1,'Displayname','O2','Marker','o','MarkerSize',MS)
+% hold on
+% plot(icellM,CxM,'LineWidth',1,'Displayname','Bacteria','Marker','o','MarkerSize',MS)
+% hold off
+% grid 
+% grid minor
+% legend
+% title('All concentrations')
+% ylabel('Concentration (mol m^{-3})','FontWeight','bold')
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+%matlab2tikz('../Report/Figures/fig4largetimestepconcs.tex');
 
-nexttile
-plot(icellM,phAnode,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
-hold on
-plot(icellM,phCathode,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
-hold off
-title("Cell pH")
-grid
-grid minor
-ylabel('pH','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
-
-nexttile
-plot(icellM,etaAM,'LineWidth',1,'Displayname','Anode','Marker','o','MarkerSize',MS)
-hold on
-plot(icellM,etaCM,'LineWidth',1,'Displayname','Cathode','Marker','o','MarkerSize',MS)
-hold off
-title("Overpotentials")
-grid
-grid minor
-ylabel('Overpotentials (V)','FontWeight','bold')
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
-
-%matlab2tikz('myfile.tex');
 
 % figure(2)
 % plot(icellM,UcellM,'LineWidth',1,'Displayname','Voltage','Marker','o','MarkerSize',MS)
@@ -350,18 +386,18 @@ legend
 % xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
 % legend
 
-figure(4)
-yyaxis left
-plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
-ylabel('Cell Voltage (V)','FontWeight','bold')
-yyaxis right
-plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
-ylabel('Power Density (W m^{-2})','FontWeight','bold')
-title("Polarisation and Power Curve")
-grid
-grid minor
-xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
-legend
+% figure(4)
+% yyaxis left
+% plot(icellM,UcellM,'LineWidth',1,'Displayname','Cell Voltage','Marker','o','MarkerSize',MS)
+% ylabel('Cell Voltage (V)','FontWeight','bold')
+% yyaxis right
+% plot(icellM,powerDensityM,'LineWidth',1,'Displayname','Cell Power Density','Marker','o','MarkerSize',MS)
+% ylabel('Power Density (W m^{-2})','FontWeight','bold')
+% title("Polarisation and Power Curve")
+% grid
+% grid minor
+% xlabel('Cell Current Density (A m^{-2})','FontWeight','bold')
+% legend
 
 % figure(1)
 % % Top two plots
@@ -402,6 +438,24 @@ legend
 % grid
 % title('All concentrations')
 % legend
+
+figure(10)
+plot(t,Cac,'LineWidth',1,'Displayname','Acetate conc')
+hold on
+plot(t,Cco2,'LineWidth',1,'Displayname','CO2 conc')
+hold on 
+plot(t,Co2,'LineWidth',1,'Displayname','O2 conc')
+hold on 
+plot(t,Cx,'LineWidth',1,'Displayname','Bacteria conc')
+hold on
+plot(t,Cm,'LineWidth',1,'Displayname','Cation conc')
+xlabel('Time h','FontWeight','bold')
+ylabel('Concentration mol m^{-3}','FontWeight','bold')
+ylim([-0.1 1.6])
+grid
+title('All concentrations')
+legend
+%matlab2tikz('../Report/Figures/concssteadystate2.tex');
 % 
 % 
 % % figure(2)
